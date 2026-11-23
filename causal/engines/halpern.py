@@ -52,7 +52,11 @@ def witness(scm, context, actual, cause, effect, *, first=False):
                 if all(effect(scm.solve(context, cause | contingency |
                                         {name: actual[name] for name in restored}))
                        for restored in subsets(z)):
-                    best = {"z": z, "w": contingency, "alternative": alternate, "changes": changes}
+                    best = {
+                        "z": z, "w": contingency, "alternative": alternate, "changes": changes,
+                        "actual_z": {name: actual[name] for name in z},
+                        "stability_subsets_verified": 2 ** len(z),
+                    }
                     if first or changes == 0:
                         return best
                     break

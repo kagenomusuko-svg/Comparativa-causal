@@ -59,8 +59,15 @@
             "pattern": "\\S"
           },
           "domain_of_validity": {
-            "type": "string",
-            "pattern": "\\S"
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "status": {
             "enum": [
@@ -77,7 +84,10 @@
             "type": "object"
           },
           "effective_options": {
-            "type": "object"
+            "type": [
+              "object",
+              "null"
+            ]
           },
           "diagnostics": {
             "type": "array",
@@ -96,6 +106,99 @@
             "type": [
               "object",
               "null"
+            ]
+          },
+          "trace": {
+            "anyOf": [
+              {
+                "type": "object",
+                "required": [
+                  "scope",
+                  "dependency_order",
+                  "elements"
+                ],
+                "properties": {
+                  "scope": {
+                    "const": "declared_inputs"
+                  },
+                  "dependency_order": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "pattern": "\\S"
+                    },
+                    "minItems": 0
+                  },
+                  "elements": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "required": [
+                        "pointer",
+                        "basis",
+                        "depends_on"
+                      ],
+                      "properties": {
+                        "pointer": {
+                          "type": "string",
+                          "pattern": "\\S"
+                        },
+                        "basis": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "required": [
+                              "kind",
+                              "ref"
+                            ],
+                            "properties": {
+                              "kind": {
+                                "enum": [
+                                  "document",
+                                  "assertion",
+                                  "hypothesis",
+                                  "assumption"
+                                ]
+                              },
+                              "ref": {
+                                "type": "string",
+                                "pattern": "\\S"
+                              }
+                            },
+                            "additionalProperties": false
+                          },
+                          "minItems": 1
+                        },
+                        "depends_on": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "pattern": "\\S"
+                          },
+                          "minItems": 0
+                        }
+                      },
+                      "additionalProperties": false
+                    },
+                    "minItems": 0
+                  }
+                },
+                "additionalProperties": false
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "reconstruction_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              {
+                "type": "null"
+              }
             ]
           }
         },

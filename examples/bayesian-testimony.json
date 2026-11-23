@@ -1,0 +1,200 @@
+{
+  "schema_version": "1",
+  "case": {
+    "schema_version": "1",
+    "id": "sintetico-v1",
+    "reference_event": "E",
+    "entries": [
+      {
+        "id": "E",
+        "kind": "event",
+        "text": "Se activa un indicador ficticio.",
+        "state": "disputed"
+      },
+      {
+        "id": "S",
+        "kind": "source",
+        "text": "Regla estipulada para el ejemplo sintético."
+      },
+      {
+        "id": "H",
+        "kind": "hypothesis",
+        "text": "Hipótesis para el modelo sintético."
+      },
+      {
+        "id": "P",
+        "kind": "proposition",
+        "text": "Afirmación utilizada en el ejemplo.",
+        "links": [
+          {
+            "relation": "asserted_by",
+            "target": "S"
+          },
+          {
+            "relation": "supports",
+            "target": "H"
+          }
+        ]
+      },
+      {
+        "id": "A1",
+        "kind": "assumption",
+        "text": "La estructura y los parámetros se estipulan para la demostración."
+      }
+    ]
+  },
+  "engine": "bayesian",
+  "mathematical_version": "fnl-2013-exact",
+  "operation": "infer",
+  "model": {
+    "domains": {
+      "H": [
+        "0",
+        "1"
+      ],
+      "R": [
+        "0",
+        "1"
+      ],
+      "E": [
+        "0",
+        "1"
+      ]
+    },
+    "nodes": {
+      "H": {
+        "parents": [],
+        "rows": [
+          {
+            "when": {},
+            "then": {
+              "0": "99/100",
+              "1": "1/100"
+            }
+          }
+        ]
+      },
+      "R": {
+        "parents": [],
+        "rows": [
+          {
+            "when": {},
+            "then": {
+              "0": "1/5",
+              "1": "4/5"
+            }
+          }
+        ]
+      },
+      "E": {
+        "rows": [
+          {
+            "when": {
+              "H": "0",
+              "R": "0"
+            },
+            "then": {
+              "0": "1/2",
+              "1": "1/2"
+            }
+          },
+          {
+            "when": {
+              "H": "0",
+              "R": "1"
+            },
+            "then": {
+              "0": "1",
+              "1": "0"
+            }
+          },
+          {
+            "when": {
+              "H": "1",
+              "R": "0"
+            },
+            "then": {
+              "0": "1/2",
+              "1": "1/2"
+            }
+          },
+          {
+            "when": {
+              "H": "1",
+              "R": "1"
+            },
+            "then": {
+              "0": "0",
+              "1": "1"
+            }
+          }
+        ]
+      }
+    },
+    "idioms": [
+      {
+        "id": "evidence_reliability",
+        "kind": "evidence_reliability",
+        "roles": {
+          "target": "H",
+          "reliability": "R",
+          "report": "E"
+        },
+        "provenance": [
+          "S"
+        ]
+      }
+    ]
+  },
+  "parameters": {
+    "hypothesis": "H",
+    "evidence": {
+      "E": "1"
+    },
+    "alternatives": [
+      "1",
+      "0"
+    ]
+  },
+  "modeling_hypotheses": [
+    "E se representa mediante la consulta del motor."
+  ],
+  "assumptions": [
+    "Los parámetros son sintéticos y estipulados."
+  ],
+  "provenance": {
+    "/model": [
+      "S"
+    ]
+  },
+  "reconstruction_id": "bayesian-testimony",
+  "lineage": {
+    "/model": {
+      "basis": [
+        {
+          "kind": "hypothesis",
+          "ref": "H"
+        }
+      ]
+    },
+    "/model/nodes/E/rows/0/then/1": {
+      "basis": [
+        {
+          "kind": "assumption",
+          "ref": "A1"
+        }
+      ],
+      "depends_on": [
+        "/model"
+      ]
+    },
+    "/parameters": {
+      "basis": [
+        {
+          "kind": "assertion",
+          "ref": "P"
+        }
+      ]
+    }
+  }
+}

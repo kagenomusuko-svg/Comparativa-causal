@@ -41,9 +41,10 @@ asignaciones explícitas del modelo.
 | Pearl | `intervene` | `query`, `do`, opcional `context` | Solución o distribución intervenida |
 | Pearl | `counterfactual` | `query`, `do`, opcionales `context`, `observed` | Solución o distribución de los mismos contextos compatibles |
 | Pearl | `effect` | `query`, `do`, `baseline` | Probabilidades de ambos regímenes y diferencia |
-| Pearl | `identify` | Objeto reservado | Diagnóstico de alcance |
+| Pearl | `identify` | `treatment`, `outcome`, `criterion`, `adjustment` o `mediator` | Verificación gráfica, fórmula, estratos y probabilidad si procede |
 | Halpern | `responsibility` | `context`, `candidate`, `effect` | AC1–AC3, causa efectiva, testigo y responsabilidad |
 | NESS | `evaluate` | `candidate`, `effect` | Causa NESS, vías y necesidad en el inventario |
+| NESS | `reconstruct` | `candidate`, `effect` | Veredictos por reconstrucción, pasos de cada certificado y lagunas |
 | Bayes | `infer` | `hypothesis`, `evidence`, opcional `alternatives` | Priori, posterior, masa de evidencia y verosimilitudes comparables |
 | Bayes | `sensitivity` | Lo anterior y `scenarios` | Base y resultados por escenario con diferencias posteriores |
 
@@ -67,6 +68,53 @@ fila de padres. `alternatives` ordena numerador y denominador. Cada entrada
 de `scenarios` contiene reemplazos `{node, when, then}`. La red base
 permanece fija entre escenarios.
 
+## Identificación, composición y patrones
+
+Para Pearl, `model.observed` contiene dominios de nodos observados,
+`latent` enumera los latentes y `parents` declara los padres de cada
+nodo. `observational_distribution` usa filas `{when, then}` exhaustivas,
+incluidas las masas cero, sobre todos los observables. `treatment` y
+`outcome` asignan exactamente un estado de variables distintas. Use
+`criterion: "backdoor"` y un arreglo `adjustment`, o
+`criterion: "frontdoor"` y un identificador `mediator`. Una fórmula
+identificada puede carecer de los datos requeridos para evaluarla.
+[Ejemplo de puerta delantera](../examples/pearl-frontdoor.json).
+
+NESS recibe `model.reconstructions`, lista de objetos `{id, model}` que
+reutilizan `conditions`, `mechanisms` y `complete`. Cada reconstrucción
+declara `roots`. Cada mecanismo agrega un booleano `composable`, que
+expresa la estabilidad estipulada para el ámbito de la reconstrucción.
+El resultado puede informar `cause`, `not_causal`, `undetermined` o
+`underspecified_mechanism`. Un `necessary_across_declared_paths`
+nulo señala que no se resolvió esa necesidad. Las lagunas conservan el
+identificador de condición o mecanismo.
+[Ejemplo de cadena](../examples/ness-chain.json).
+
+Bayes admite `model.idioms` como lista de `{id, kind, roles, provenance}`.
+Los roles se asignan a variables declaradas y `provenance` referencia
+registros del caso. Los nodos pueden declarar padres adicionales. Para
+un destino cubierto por un patrón, el campo `parents` se puede omitir.
+Cada CPT se valida contra los padres efectivos. El resultado registra
+los arcos y su origen metodológico. Consulte [roles y semántica](matematicas.md)
+y el [ejemplo de fiabilidad](../examples/bayesian-testimony.json).
+
+## Trazabilidad
+
+Cada registro puede declarar `links` con `{relation, target}`.
+`asserted_by` exige un destino fuente. `supports`, `contradicts`,
+`about` y `participates_in` referencian registros compatibles.
+`reconstruction_id` permite distinguir ejecuciones sobre un mismo
+acontecimiento. `lineage` permite asociar elementos y parámetros con
+identificadores. Sus claves son punteros JSON RFC 6901 bajo `/model`
+o `/parameters`. Cada valor declara `basis`, lista de pares
+`{kind, ref}` de tipo `document`, `assertion`, `hypothesis` o
+`assumption`, y opcionalmente `depends_on` con otros punteros ya
+declarados. Se validan los punteros y tipos de registros y se rechazan
+ciclos. El sobre conserva el grafo de dependencias declarado y el
+registro documental con el que se resuelve. La traza tiene granularidad
+de entrada declarada. No infiere todas las dependencias semánticas
+mínimas del resultado ni obliga a documentar parámetros omitidos.
+
 ## Sobre de resultados
 
 Identifica caso, operación, motor, versión matemática y versión del software.
@@ -83,10 +131,9 @@ de entrada.
 
 ## Interfaz externa reservada
 
-Un consumidor futuro puede aceptar un lote conforme a
+`causal.external.bundle(case_id, runs)` construye y comprueba un lote conforme a
 [external-engines-v1](../schemas/external-engines-v1.schema.json) con las
 salidas bajo `runs`. Cada salida conserva identificadores, procedencia y
-su propio `result`. El consumidor verificará igualdad de `case_id`
-entre el lote y cada salida. Las versiones y los contratos propios de
+su propio `result`. La API verifica la igualdad de `case_id` entre el lote y cada salida. Las versiones y los contratos propios de
 motores externos se negocian entre el consumidor y el proveedor. El
 contrato de lote se publica en esta fase como formato de intercambio.

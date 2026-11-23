@@ -1,0 +1,141 @@
+{
+  "schema_version": "1",
+  "case": {
+    "schema_version": "1",
+    "id": "sintetico-v1",
+    "reference_event": "E",
+    "entries": [
+      {
+        "id": "E",
+        "kind": "event",
+        "text": "Se activa un indicador ficticio.",
+        "state": "disputed"
+      },
+      {
+        "id": "S",
+        "kind": "source",
+        "text": "Regla estipulada para el ejemplo sintético."
+      }
+    ]
+  },
+  "engine": "pearl",
+  "mathematical_version": "pearl-2010",
+  "operation": "identify",
+  "model": {
+    "observed": {
+      "U": [
+        "0",
+        "1"
+      ],
+      "X": [
+        "0",
+        "1"
+      ],
+      "Y": [
+        "0",
+        "1"
+      ]
+    },
+    "latent": [],
+    "parents": {
+      "U": [],
+      "X": [
+        "U"
+      ],
+      "Y": [
+        "X",
+        "U"
+      ]
+    },
+    "observational_distribution": [
+      {
+        "when": {
+          "U": "0",
+          "X": "0",
+          "Y": "0"
+        },
+        "then": "3/10"
+      },
+      {
+        "when": {
+          "U": "0",
+          "X": "0",
+          "Y": "1"
+        },
+        "then": "3/40"
+      },
+      {
+        "when": {
+          "U": "0",
+          "X": "1",
+          "Y": "0"
+        },
+        "then": "1/20"
+      },
+      {
+        "when": {
+          "U": "0",
+          "X": "1",
+          "Y": "1"
+        },
+        "then": "3/40"
+      },
+      {
+        "when": {
+          "U": "1",
+          "X": "0",
+          "Y": "0"
+        },
+        "then": "3/40"
+      },
+      {
+        "when": {
+          "U": "1",
+          "X": "0",
+          "Y": "1"
+        },
+        "then": "1/20"
+      },
+      {
+        "when": {
+          "U": "1",
+          "X": "1",
+          "Y": "0"
+        },
+        "then": "3/40"
+      },
+      {
+        "when": {
+          "U": "1",
+          "X": "1",
+          "Y": "1"
+        },
+        "then": "3/10"
+      }
+    ]
+  },
+  "parameters": {
+    "criterion": "backdoor",
+    "treatment": {
+      "X": "1"
+    },
+    "outcome": {
+      "Y": "1"
+    },
+    "adjustment": [
+      "U"
+    ]
+  },
+  "modeling_hypotheses": [
+    "E se representa mediante la consulta del motor."
+  ],
+  "assumptions": [
+    "Los parámetros son sintéticos y estipulados."
+  ],
+  "provenance": {
+    "/model": [
+      "S"
+    ]
+  },
+  "reconstruction_id": "pearl-backdoor"
+}

@@ -15,7 +15,9 @@
     "effective_input",
     "effective_options",
     "steps",
-    "diagnostics"
+    "diagnostics",
+    "trace",
+    "reconstruction_id"
   ],
   "properties": {
     "schema_version": {
@@ -36,9 +38,39 @@
         }
       ]
     },
-    "engine": {},
-    "mathematical_version": {},
-    "operation": {},
+    "engine": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "\\S"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "mathematical_version": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "\\S"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "operation": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "\\S"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
     "status": {
       "enum": [
         "success",
@@ -100,7 +132,296 @@
       },
       "minItems": 0,
       "uniqueItems": false
+    },
+    "trace": {
+      "anyOf": [
+        {
+          "type": "object",
+          "required": [
+            "scope",
+            "dependency_order",
+            "elements"
+          ],
+          "properties": {
+            "scope": {
+              "const": "declared_inputs"
+            },
+            "dependency_order": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "minItems": 0
+            },
+            "elements": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "pointer",
+                  "basis",
+                  "depends_on"
+                ],
+                "properties": {
+                  "pointer": {
+                    "type": "string",
+                    "pattern": "\\S"
+                  },
+                  "basis": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "required": [
+                        "kind",
+                        "ref"
+                      ],
+                      "properties": {
+                        "kind": {
+                          "enum": [
+                            "document",
+                            "assertion",
+                            "hypothesis",
+                            "assumption"
+                          ]
+                        },
+                        "ref": {
+                          "type": "string",
+                          "pattern": "\\S"
+                        }
+                      },
+                      "additionalProperties": false
+                    },
+                    "minItems": 1
+                  },
+                  "depends_on": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "pattern": "\\S"
+                    },
+                    "minItems": 0
+                  }
+                },
+                "additionalProperties": false
+              },
+              "minItems": 0
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "reconstruction_id": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "\\S"
+        },
+        {
+          "type": "null"
+        }
+      ]
     }
   },
-  "additionalProperties": false
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "engine": {
+            "const": "halpern"
+          },
+          "status": {
+            "const": "success"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "result": {
+            "type": "object",
+            "required": [
+              "actual_cause",
+              "responsibility",
+              "ac1",
+              "ac2",
+              "ac3"
+            ],
+            "properties": {
+              "actual_cause": {
+                "type": "boolean"
+              },
+              "responsibility": {
+                "type": "string",
+                "pattern": "^-?[0-9]+(/[1-9][0-9]*)?$"
+              },
+              "ac1": {
+                "type": "boolean"
+              },
+              "ac2": {
+                "type": [
+                  "boolean",
+                  "null"
+                ]
+              },
+              "ac3": {
+                "type": [
+                  "boolean",
+                  "null"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "engine": {
+            "const": "bayesian"
+          },
+          "status": {
+            "const": "success"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "result": {
+            "type": "object",
+            "required": [
+              "posterior",
+              "evidence_probability"
+            ],
+            "properties": {
+              "posterior": {
+                "type": "object",
+                "propertyNames": {
+                  "type": "string",
+                  "pattern": "\\S"
+                },
+                "additionalProperties": {
+                  "type": "string",
+                  "pattern": "^-?[0-9]+(/[1-9][0-9]*)?$"
+                }
+              },
+              "evidence_probability": {
+                "type": "string",
+                "pattern": "^-?[0-9]+(/[1-9][0-9]*)?$"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "engine": {
+            "const": "ness"
+          },
+          "status": {
+            "const": "success"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "result": {
+            "anyOf": [
+              {
+                "type": "object",
+                "required": [
+                  "ness_cause",
+                  "witnesses"
+                ],
+                "properties": {
+                  "ness_cause": {
+                    "type": "boolean"
+                  },
+                  "witnesses": {
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    },
+                    "minItems": 0
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "required": [
+                  "conclusion",
+                  "reconstructions"
+                ],
+                "properties": {
+                  "conclusion": {
+                    "enum": [
+                      "cause",
+                      "not_causal"
+                    ]
+                  },
+                  "reconstructions": {
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    },
+                    "minItems": 1
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "engine": {
+            "const": "pearl"
+          },
+          "status": {
+            "const": "success"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "result": {
+            "anyOf": [
+              {
+                "type": "object",
+                "required": [
+                  "event"
+                ],
+                "properties": {
+                  "event": {
+                    "type": "boolean"
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "required": [
+                  "probability"
+                ],
+                "properties": {
+                  "probability": {
+                    "type": "string",
+                    "pattern": "^-?[0-9]+(/[1-9][0-9]*)?$"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  ]
 }

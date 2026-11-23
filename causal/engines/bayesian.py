@@ -5,22 +5,30 @@ from math import prod
 from ..core import (assignment, dag, domains, fields, labels, matches, probability,
                     require, rows, worlds)
 
+from .evidence_patterns import expand, verify
+
 VERSION = "fnl-2013-exact"
 
 
 class Network:
     def __init__(self, model, budget):
-        fields(model, "domains nodes")
+        fields(model, "domains nodes", "idioms")
         self.states = domains(model["domains"])
         require(bool(self.states), "Red vacía")
         nodes = model["nodes"]
         require(type(nodes) is dict and nodes.keys() <= self.states.keys(), "Nodos inválidos")
         require(nodes.keys() == self.states.keys(), "Faltan nodos o parámetros", "insufficient_data")
+        added, self.certificates = expand(model.get("idioms", []), self.states, budget)
         self.parents = {}
         for name, node in sorted(nodes.items()):
-            fields(node, "parents rows")
-            self.parents[name] = labels(node["parents"])
+            if name in added:
+                fields(node, "rows", "parents")
+            else:
+                fields(node, "parents rows")
+            declared = labels(node.get("parents", []))
+            self.parents[name] = sorted(set(declared) | added.get(name, set()))
         self.order = dag(self.parents, self.states)
+        verify(self.certificates, self.parents, budget)
         self.tables = {}
         for name in self.order:
             self.tables[name] = rows(nodes[name]["rows"], self.parents[name], self.states,
@@ -102,6 +110,9 @@ def run(operation: str, model: dict, params: dict, budget) -> dict:
         require(len(alternatives) == 2 and all(a in network.states[hypothesis] for a in alternatives),
                 "Se requieren dos estados distintos de la hipótesis")
     baseline = network.infer(hypothesis, evidence, alternatives, {}, budget)
+    if network.certificates:
+        baseline["pattern_certificates"] = network.certificates
+        baseline["effective_parents"] = network.parents
     if operation == "infer":
         return baseline
     scenarios = params["scenarios"]

@@ -1,13 +1,18 @@
 # Comparativa causal
 
-Cuatro motores matemáticos locales para casos sintéticos. Requieren Python
+Cuatro motores matemáticos locales para reconstrucciones estructuradas. Los ejemplos son sintéticos. Requieren Python
 3.11 o posterior y usan únicamente la biblioteca estándar en ejecución.
 
 ```bash
 python -m causal examples/pearl.json
+python -m causal examples/pearl-backdoor.json
+python -m causal examples/pearl-frontdoor.json
 python -m causal examples/halpern.json
 python -m causal examples/ness.json
+python -m causal examples/ness-chain.json
 python -m causal examples/bayesian.json
+python -m causal examples/bayesian-testimony.json
+python -m pip install '.[test]'
 python -m unittest discover -s tests -v
 ```
 

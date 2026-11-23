@@ -58,7 +58,11 @@
             "proposition",
             "hypothesis",
             "support",
-            "contradiction"
+            "contradiction",
+            "mechanism",
+            "evidence",
+            "absence",
+            "assumption"
           ]
         },
         "text": {
@@ -76,6 +80,33 @@
             "unknown",
             "pending"
           ]
+        },
+        "links": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "relation",
+              "target"
+            ],
+            "properties": {
+              "relation": {
+                "enum": [
+                  "asserted_by",
+                  "supports",
+                  "contradicts",
+                  "about",
+                  "participates_in"
+                ]
+              },
+              "target": {
+                "type": "string",
+                "pattern": "\\S"
+              }
+            },
+            "additionalProperties": false
+          },
+          "minItems": 0
         }
       },
       "additionalProperties": false

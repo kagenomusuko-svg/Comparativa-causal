@@ -72,6 +72,20 @@
         }
       },
       "additionalProperties": false
+    },
+    "lineage": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string",
+        "pattern": "\\S"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/lineage_record"
+      }
+    },
+    "reconstruction_id": {
+      "type": "string",
+      "pattern": "\\S"
     }
   },
   "additionalProperties": false,
@@ -263,13 +277,63 @@
           "const": "pearl-2010"
         },
         "model": {
-          "$ref": "#/$defs/scm"
+          "$ref": "#/$defs/identification"
         },
         "operation": {
           "const": "identify"
         },
         "parameters": {
-          "type": "object"
+          "oneOf": [
+            {
+              "type": "object",
+              "required": [
+                "treatment",
+                "outcome",
+                "criterion",
+                "adjustment"
+              ],
+              "properties": {
+                "treatment": {
+                  "$ref": "#/$defs/assignment"
+                },
+                "outcome": {
+                  "$ref": "#/$defs/assignment"
+                },
+                "criterion": {
+                  "const": "backdoor"
+                },
+                "adjustment": {
+                  "$ref": "#/$defs/labels"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "required": [
+                "treatment",
+                "outcome",
+                "criterion",
+                "mediator"
+              ],
+              "properties": {
+                "treatment": {
+                  "$ref": "#/$defs/assignment"
+                },
+                "outcome": {
+                  "$ref": "#/$defs/assignment"
+                },
+                "criterion": {
+                  "const": "frontdoor"
+                },
+                "mediator": {
+                  "type": "string",
+                  "pattern": "\\S"
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
         }
       }
     },
@@ -437,6 +501,40 @@
           "additionalProperties": false
         }
       }
+    },
+    {
+      "properties": {
+        "engine": {
+          "const": "ness"
+        },
+        "mathematical_version": {
+          "const": "wright-1985-declared"
+        },
+        "operation": {
+          "const": "reconstruct"
+        },
+        "model": {
+          "$ref": "#/$defs/ness_alternatives"
+        },
+        "parameters": {
+          "type": "object",
+          "required": [
+            "candidate",
+            "effect"
+          ],
+          "properties": {
+            "candidate": {
+              "type": "string",
+              "pattern": "\\S"
+            },
+            "effect": {
+              "type": "string",
+              "pattern": "\\S"
+            }
+          },
+          "additionalProperties": false
+        }
+      }
     }
   ],
   "$defs": {
@@ -577,7 +675,11 @@
             "proposition",
             "hypothesis",
             "support",
-            "contradiction"
+            "contradiction",
+            "mechanism",
+            "evidence",
+            "absence",
+            "assumption"
           ]
         },
         "text": {
@@ -595,6 +697,33 @@
             "unknown",
             "pending"
           ]
+        },
+        "links": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "relation",
+              "target"
+            ],
+            "properties": {
+              "relation": {
+                "enum": [
+                  "asserted_by",
+                  "supports",
+                  "contradicts",
+                  "about",
+                  "participates_in"
+                ]
+              },
+              "target": {
+                "type": "string",
+                "pattern": "\\S"
+              }
+            },
+            "additionalProperties": false
+          },
+          "minItems": 0
         }
       },
       "additionalProperties": false
@@ -804,7 +933,6 @@
           "additionalProperties": {
             "type": "object",
             "required": [
-              "parents",
               "rows"
             ],
             "properties": {
@@ -842,6 +970,13 @@
             },
             "additionalProperties": false
           }
+        },
+        "idioms": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidence_pattern"
+          },
+          "minItems": 0
         }
       },
       "additionalProperties": false
@@ -878,6 +1013,465 @@
       },
       "minItems": 1,
       "uniqueItems": false
+    },
+    "lineage_record": {
+      "type": "object",
+      "required": [
+        "basis"
+      ],
+      "properties": {
+        "basis": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "kind",
+              "ref"
+            ],
+            "properties": {
+              "kind": {
+                "enum": [
+                  "document",
+                  "assertion",
+                  "hypothesis",
+                  "assumption"
+                ]
+              },
+              "ref": {
+                "type": "string",
+                "pattern": "\\S"
+              }
+            },
+            "additionalProperties": false
+          },
+          "minItems": 1
+        },
+        "depends_on": {
+          "$ref": "#/$defs/labels"
+        }
+      },
+      "additionalProperties": false
+    },
+    "identification": {
+      "type": "object",
+      "required": [
+        "observed",
+        "latent",
+        "parents"
+      ],
+      "properties": {
+        "observed": {
+          "$ref": "#/$defs/domains"
+        },
+        "latent": {
+          "$ref": "#/$defs/labels"
+        },
+        "parents": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/labels"
+          }
+        },
+        "observational_distribution": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "when",
+              "then"
+            ],
+            "properties": {
+              "when": {
+                "$ref": "#/$defs/assignment"
+              },
+              "then": {
+                "$ref": "#/$defs/probability"
+              }
+            },
+            "additionalProperties": false
+          },
+          "minItems": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "ness_reconstruction": {
+      "type": "object",
+      "required": [
+        "conditions",
+        "complete",
+        "roots",
+        "mechanisms"
+      ],
+      "properties": {
+        "conditions": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "additionalProperties": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          }
+        },
+        "complete": {
+          "type": "boolean"
+        },
+        "roots": {
+          "$ref": "#/$defs/labels"
+        },
+        "mechanisms": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "effect",
+              "requires",
+              "law",
+              "provenance",
+              "composable"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "effect": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "requires": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "\\S"
+                },
+                "minItems": 1,
+                "uniqueItems": true
+              },
+              "law": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "provenance": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "\\S"
+                },
+                "minItems": 1,
+                "uniqueItems": true
+              },
+              "composable": {
+                "type": "boolean"
+              }
+            },
+            "additionalProperties": false
+          },
+          "minItems": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "ness_alternatives": {
+      "type": "object",
+      "required": [
+        "reconstructions"
+      ],
+      "properties": {
+        "reconstructions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "model"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "model": {
+                "$ref": "#/$defs/ness_reconstruction"
+              }
+            },
+            "additionalProperties": false
+          },
+          "minItems": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "evidence_pattern": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "id",
+            "kind",
+            "roles",
+            "provenance"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "\\S"
+            },
+            "kind": {
+              "const": "evidence"
+            },
+            "roles": {
+              "type": "object",
+              "required": [
+                "target",
+                "report"
+              ],
+              "properties": {
+                "target": {
+                  "type": "string",
+                  "pattern": "\\S"
+                },
+                "report": {
+                  "type": "string",
+                  "pattern": "\\S"
+                }
+              },
+              "additionalProperties": false
+            },
+            "provenance": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "minItems": 1
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "id",
+            "kind",
+            "roles",
+            "provenance"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "\\S"
+            },
+            "kind": {
+              "const": "evidence_reliability"
+            },
+            "roles": {
+              "type": "object",
+              "required": [
+                "target",
+                "report",
+                "reliability"
+              ],
+              "properties": {
+                "target": {
+                  "type": "string",
+                  "pattern": "\\S"
+                },
+                "report": {
+                  "type": "string",
+                  "pattern": "\\S"
+                },
+                "reliability": {
+                  "type": "string",
+                  "pattern": "\\S"
+                }
+              },
+              "additionalProperties": false
+            },
+            "provenance": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "minItems": 1
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "id",
+            "kind",
+            "roles",
+            "provenance"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "\\S"
+            },
+            "kind": {
+              "const": "opportunity_motive"
+            },
+            "roles": {
+              "type": "object",
+              "required": [
+                "hypothesis"
+              ],
+              "properties": {
+                "hypothesis": {
+                  "type": "string",
+                  "pattern": "\\S"
+                },
+                "opportunity": {
+                  "type": "string",
+                  "pattern": "\\S"
+                },
+                "motive": {
+                  "type": "string",
+                  "pattern": "\\S"
+                }
+              },
+              "additionalProperties": false
+            },
+            "provenance": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "minItems": 1
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "id",
+            "kind",
+            "roles",
+            "provenance"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "\\S"
+            },
+            "kind": {
+              "const": "testimony_components"
+            },
+            "roles": {
+              "type": "object",
+              "required": [
+                "target",
+                "report",
+                "sensitivity",
+                "objectivity",
+                "veracity"
+              ],
+              "properties": {
+                "target": {
+                  "type": "string",
+                  "pattern": "\\S"
+                },
+                "report": {
+                  "type": "string",
+                  "pattern": "\\S"
+                },
+                "sensitivity": {
+                  "type": "string",
+                  "pattern": "\\S"
+                },
+                "objectivity": {
+                  "type": "string",
+                  "pattern": "\\S"
+                },
+                "veracity": {
+                  "type": "string",
+                  "pattern": "\\S"
+                }
+              },
+              "additionalProperties": false
+            },
+            "provenance": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "minItems": 1
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "id",
+            "kind",
+            "roles",
+            "provenance"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "\\S"
+            },
+            "kind": {
+              "const": "alibi"
+            },
+            "roles": {
+              "type": "object",
+              "required": [
+                "opportunity",
+                "hypothesis",
+                "veracity",
+                "report"
+              ],
+              "properties": {
+                "opportunity": {
+                  "type": "string",
+                  "pattern": "\\S"
+                },
+                "hypothesis": {
+                  "type": "string",
+                  "pattern": "\\S"
+                },
+                "veracity": {
+                  "type": "string",
+                  "pattern": "\\S"
+                },
+                "report": {
+                  "type": "string",
+                  "pattern": "\\S"
+                }
+              },
+              "additionalProperties": false
+            },
+            "provenance": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "minItems": 1
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
     }
   }
 }

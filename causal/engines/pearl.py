@@ -5,6 +5,8 @@ from fractions import Fraction
 from ..core import (assignment, dag, domains, fields, labels, matches, probability,
                     require, rows, worlds)
 
+from .identification import identify
+
 VERSION = "pearl-2010"
 
 
@@ -60,8 +62,7 @@ class SCM:
 
 def run(operation: str, model: dict, params: dict, budget) -> dict:
     if operation == "identify":
-        require(type(params) is dict, "Parámetros inválidos")
-        require(False, "Identificación observacional general fuera de v1", "undefined_operation")
+        return identify(model, params, budget)
     allowed = {
         "observe": ("query", "context observed"),
         "associate": ("query observed", "context"),

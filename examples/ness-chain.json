@@ -1,0 +1,141 @@
+{
+  "schema_version": "1",
+  "case": {
+    "schema_version": "1",
+    "id": "sintetico-v1",
+    "reference_event": "E",
+    "entries": [
+      {
+        "id": "E",
+        "kind": "event",
+        "text": "Se activa un indicador ficticio.",
+        "state": "disputed"
+      },
+      {
+        "id": "S",
+        "kind": "source",
+        "text": "Regla estipulada para el ejemplo sintético."
+      },
+      {
+        "id": "H",
+        "kind": "hypothesis",
+        "text": "Hipótesis para el modelo sintético."
+      },
+      {
+        "id": "P",
+        "kind": "proposition",
+        "text": "Afirmación utilizada en el ejemplo.",
+        "links": [
+          {
+            "relation": "asserted_by",
+            "target": "S"
+          },
+          {
+            "relation": "supports",
+            "target": "H"
+          }
+        ]
+      },
+      {
+        "id": "A1",
+        "kind": "assumption",
+        "text": "La estructura y los parámetros se estipulan para la demostración."
+      }
+    ]
+  },
+  "engine": "ness",
+  "mathematical_version": "wright-1985-declared",
+  "operation": "reconstruct",
+  "model": {
+    "reconstructions": [
+      {
+        "id": "R1",
+        "model": {
+          "conditions": {
+            "A": true,
+            "B": true,
+            "MID": true,
+            "Y": true
+          },
+          "roots": [
+            "A",
+            "B"
+          ],
+          "complete": true,
+          "mechanisms": [
+            {
+              "id": "first",
+              "effect": "MID",
+              "requires": [
+                "A"
+              ],
+              "law": "Mecanismo sintético",
+              "provenance": [
+                "S"
+              ],
+              "composable": true
+            },
+            {
+              "id": "second",
+              "effect": "Y",
+              "requires": [
+                "MID",
+                "B"
+              ],
+              "law": "Mecanismo sintético",
+              "provenance": [
+                "S"
+              ],
+              "composable": true
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "parameters": {
+    "candidate": "A",
+    "effect": "Y"
+  },
+  "modeling_hypotheses": [
+    "E se representa mediante la consulta del motor."
+  ],
+  "assumptions": [
+    "Los parámetros son sintéticos y estipulados."
+  ],
+  "provenance": {
+    "/model": [
+      "S"
+    ]
+  },
+  "reconstruction_id": "ness-chain",
+  "lineage": {
+    "/model": {
+      "basis": [
+        {
+          "kind": "hypothesis",
+          "ref": "H"
+        }
+      ]
+    },
+    "/model/reconstructions/0/model/mechanisms/0": {
+      "basis": [
+        {
+          "kind": "assumption",
+          "ref": "A1"
+        }
+      ],
+      "depends_on": [
+        "/model"
+      ]
+    },
+    "/parameters": {
+      "basis": [
+        {
+          "kind": "assertion",
+          "ref": "P"
+        }
+      ]
+    }
+  }
+}

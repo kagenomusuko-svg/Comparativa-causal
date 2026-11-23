@@ -1,10 +1,14 @@
 """Certificados de suficiencia causal mediante mecanismos declarados."""
 from ..core import fields, label, labels, require
 
+from .ness_composition import reconstruct
+
 VERSION = "wright-1985-declared"
 
 
 def run(operation: str, model: dict, params: dict, budget) -> dict:
+    if operation == "reconstruct":
+        return reconstruct(model, params, budget)
     require(operation == "evaluate", "Operación NESS desconocida", "undefined_operation")
     fields(model, "conditions mechanisms complete")
     fields(params, "candidate effect")

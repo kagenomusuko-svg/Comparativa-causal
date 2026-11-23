@@ -1,0 +1,198 @@
+{
+  "schema_version": "1",
+  "case": {
+    "schema_version": "1",
+    "id": "sintetico-v1",
+    "reference_event": "E",
+    "entries": [
+      {
+        "id": "E",
+        "kind": "event",
+        "text": "Se activa un indicador ficticio.",
+        "state": "disputed"
+      },
+      {
+        "id": "S",
+        "kind": "source",
+        "text": "Regla estipulada para el ejemplo sintético."
+      },
+      {
+        "id": "H",
+        "kind": "hypothesis",
+        "text": "Hipótesis para el modelo sintético."
+      },
+      {
+        "id": "P",
+        "kind": "proposition",
+        "text": "Afirmación utilizada en el ejemplo.",
+        "links": [
+          {
+            "relation": "asserted_by",
+            "target": "S"
+          },
+          {
+            "relation": "supports",
+            "target": "H"
+          }
+        ]
+      },
+      {
+        "id": "A1",
+        "kind": "assumption",
+        "text": "La estructura y los parámetros se estipulan para la demostración."
+      }
+    ]
+  },
+  "engine": "pearl",
+  "mathematical_version": "pearl-2010",
+  "operation": "identify",
+  "model": {
+    "observed": {
+      "X": [
+        "0",
+        "1"
+      ],
+      "M": [
+        "0",
+        "1"
+      ],
+      "Y": [
+        "0",
+        "1"
+      ]
+    },
+    "latent": [
+      "U"
+    ],
+    "parents": {
+      "X": [
+        "U"
+      ],
+      "U": [],
+      "M": [
+        "X"
+      ],
+      "Y": [
+        "M",
+        "U"
+      ]
+    },
+    "observational_distribution": [
+      {
+        "when": {
+          "X": "0",
+          "M": "0",
+          "Y": "0"
+        },
+        "then": "9/32"
+      },
+      {
+        "when": {
+          "X": "0",
+          "M": "0",
+          "Y": "1"
+        },
+        "then": "3/32"
+      },
+      {
+        "when": {
+          "X": "0",
+          "M": "1",
+          "Y": "0"
+        },
+        "then": "7/160"
+      },
+      {
+        "when": {
+          "X": "0",
+          "M": "1",
+          "Y": "1"
+        },
+        "then": "13/160"
+      },
+      {
+        "when": {
+          "X": "1",
+          "M": "0",
+          "Y": "0"
+        },
+        "then": "13/160"
+      },
+      {
+        "when": {
+          "X": "1",
+          "M": "0",
+          "Y": "1"
+        },
+        "then": "7/160"
+      },
+      {
+        "when": {
+          "X": "1",
+          "M": "1",
+          "Y": "0"
+        },
+        "then": "3/32"
+      },
+      {
+        "when": {
+          "X": "1",
+          "M": "1",
+          "Y": "1"
+        },
+        "then": "9/32"
+      }
+    ]
+  },
+  "parameters": {
+    "criterion": "frontdoor",
+    "treatment": {
+      "X": "1"
+    },
+    "outcome": {
+      "Y": "1"
+    },
+    "mediator": "M"
+  },
+  "modeling_hypotheses": [
+    "E se representa mediante la consulta del motor."
+  ],
+  "assumptions": [
+    "Los parámetros son sintéticos y estipulados."
+  ],
+  "provenance": {
+    "/model": [
+      "S"
+    ]
+  },
+  "reconstruction_id": "pearl-frontdoor",
+  "lineage": {
+    "/model": {
+      "basis": [
+        {
+          "kind": "hypothesis",
+          "ref": "H"
+        }
+      ]
+    },
+    "/model/observational_distribution/0/then": {
+      "basis": [
+        {
+          "kind": "assumption",
+          "ref": "A1"
+        }
+      ],
+      "depends_on": [
+        "/model"
+      ]
+    },
+    "/parameters": {
+      "basis": [
+        {
+          "kind": "assertion",
+          "ref": "P"
+        }
+      ]
+    }
+  }
+}
