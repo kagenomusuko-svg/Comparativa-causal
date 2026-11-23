@@ -1,0 +1,109 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "external-engines-v1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "case_id",
+    "runs"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1"
+    },
+    "case_id": {
+      "type": "string",
+      "pattern": "\\S"
+    },
+    "runs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "schema_version",
+          "case_id",
+          "engine",
+          "mathematical_version",
+          "software_version",
+          "operation",
+          "domain_of_validity",
+          "status",
+          "effective_input",
+          "effective_options",
+          "diagnostics",
+          "steps",
+          "result"
+        ],
+        "properties": {
+          "schema_version": {
+            "const": "1"
+          },
+          "case_id": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "engine": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "mathematical_version": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "software_version": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "operation": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "domain_of_validity": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "status": {
+            "enum": [
+              "success",
+              "insufficient_data",
+              "invalid_model",
+              "not_identifiable",
+              "undefined_operation",
+              "limit_exceeded",
+              "execution_error"
+            ]
+          },
+          "effective_input": {
+            "type": "object"
+          },
+          "effective_options": {
+            "type": "object"
+          },
+          "diagnostics": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "\\S"
+            },
+            "minItems": 0,
+            "uniqueItems": false
+          },
+          "steps": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "result": {
+            "type": [
+              "object",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "minItems": 1,
+      "uniqueItems": false
+    }
+  },
+  "additionalProperties": false
+}

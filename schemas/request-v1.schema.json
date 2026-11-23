@@ -1,0 +1,883 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "request-v1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "case",
+    "engine",
+    "mathematical_version",
+    "operation",
+    "model",
+    "parameters"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1"
+    },
+    "case": {
+      "$ref": "#/$defs/case"
+    },
+    "engine": {
+      "enum": [
+        "pearl",
+        "halpern",
+        "ness",
+        "bayesian"
+      ]
+    },
+    "mathematical_version": {
+      "type": "string",
+      "pattern": "\\S"
+    },
+    "operation": {
+      "type": "string",
+      "pattern": "\\S"
+    },
+    "model": {
+      "type": "object"
+    },
+    "parameters": {
+      "type": "object"
+    },
+    "modeling_hypotheses": {
+      "$ref": "#/$defs/labels"
+    },
+    "assumptions": {
+      "$ref": "#/$defs/labels"
+    },
+    "provenance": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string",
+        "pattern": "\\S"
+      },
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "pattern": "\\S"
+        },
+        "minItems": 1,
+        "uniqueItems": true
+      }
+    },
+    "options": {
+      "type": "object",
+      "required": [],
+      "properties": {
+        "max_steps": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false,
+  "oneOf": [
+    {
+      "properties": {
+        "engine": {
+          "const": "pearl"
+        },
+        "mathematical_version": {
+          "const": "pearl-2010"
+        },
+        "model": {
+          "$ref": "#/$defs/scm"
+        },
+        "operation": {
+          "const": "observe"
+        },
+        "parameters": {
+          "type": "object",
+          "required": [
+            "query"
+          ],
+          "properties": {
+            "query": {
+              "$ref": "#/$defs/assignment"
+            },
+            "context": {
+              "$ref": "#/$defs/assignment"
+            },
+            "observed": {
+              "$ref": "#/$defs/assignment"
+            }
+          },
+          "additionalProperties": false
+        }
+      }
+    },
+    {
+      "properties": {
+        "engine": {
+          "const": "pearl"
+        },
+        "mathematical_version": {
+          "const": "pearl-2010"
+        },
+        "model": {
+          "$ref": "#/$defs/scm"
+        },
+        "operation": {
+          "const": "associate"
+        },
+        "parameters": {
+          "type": "object",
+          "required": [
+            "query",
+            "observed"
+          ],
+          "properties": {
+            "query": {
+              "$ref": "#/$defs/assignment"
+            },
+            "observed": {
+              "$ref": "#/$defs/assignment"
+            },
+            "context": {
+              "$ref": "#/$defs/assignment"
+            }
+          },
+          "additionalProperties": false
+        }
+      }
+    },
+    {
+      "properties": {
+        "engine": {
+          "const": "pearl"
+        },
+        "mathematical_version": {
+          "const": "pearl-2010"
+        },
+        "model": {
+          "$ref": "#/$defs/scm"
+        },
+        "operation": {
+          "const": "intervene"
+        },
+        "parameters": {
+          "type": "object",
+          "required": [
+            "query",
+            "do"
+          ],
+          "properties": {
+            "query": {
+              "$ref": "#/$defs/assignment"
+            },
+            "do": {
+              "$ref": "#/$defs/assignment"
+            },
+            "context": {
+              "$ref": "#/$defs/assignment"
+            }
+          },
+          "additionalProperties": false
+        }
+      }
+    },
+    {
+      "properties": {
+        "engine": {
+          "const": "pearl"
+        },
+        "mathematical_version": {
+          "const": "pearl-2010"
+        },
+        "model": {
+          "$ref": "#/$defs/scm"
+        },
+        "operation": {
+          "const": "counterfactual"
+        },
+        "parameters": {
+          "type": "object",
+          "required": [
+            "query",
+            "do"
+          ],
+          "properties": {
+            "query": {
+              "$ref": "#/$defs/assignment"
+            },
+            "do": {
+              "$ref": "#/$defs/assignment"
+            },
+            "context": {
+              "$ref": "#/$defs/assignment"
+            },
+            "observed": {
+              "$ref": "#/$defs/assignment"
+            }
+          },
+          "additionalProperties": false
+        }
+      }
+    },
+    {
+      "properties": {
+        "engine": {
+          "const": "pearl"
+        },
+        "mathematical_version": {
+          "const": "pearl-2010"
+        },
+        "model": {
+          "$ref": "#/$defs/scm"
+        },
+        "operation": {
+          "const": "effect"
+        },
+        "parameters": {
+          "type": "object",
+          "required": [
+            "query",
+            "do",
+            "baseline"
+          ],
+          "properties": {
+            "query": {
+              "$ref": "#/$defs/assignment"
+            },
+            "do": {
+              "$ref": "#/$defs/assignment"
+            },
+            "baseline": {
+              "$ref": "#/$defs/assignment"
+            }
+          },
+          "additionalProperties": false
+        }
+      }
+    },
+    {
+      "properties": {
+        "engine": {
+          "const": "pearl"
+        },
+        "mathematical_version": {
+          "const": "pearl-2010"
+        },
+        "model": {
+          "$ref": "#/$defs/scm"
+        },
+        "operation": {
+          "const": "identify"
+        },
+        "parameters": {
+          "type": "object"
+        }
+      }
+    },
+    {
+      "properties": {
+        "engine": {
+          "const": "halpern"
+        },
+        "mathematical_version": {
+          "const": "hp-2001-ch-2004"
+        },
+        "model": {
+          "$ref": "#/$defs/scm"
+        },
+        "operation": {
+          "const": "responsibility"
+        },
+        "parameters": {
+          "type": "object",
+          "required": [
+            "candidate",
+            "context",
+            "effect"
+          ],
+          "properties": {
+            "candidate": {
+              "$ref": "#/$defs/assignment"
+            },
+            "context": {
+              "$ref": "#/$defs/assignment"
+            },
+            "effect": {
+              "$ref": "#/$defs/formula"
+            }
+          },
+          "additionalProperties": false
+        }
+      }
+    },
+    {
+      "properties": {
+        "engine": {
+          "const": "ness"
+        },
+        "mathematical_version": {
+          "const": "wright-1985-declared"
+        },
+        "model": {
+          "$ref": "#/$defs/ness"
+        },
+        "operation": {
+          "const": "evaluate"
+        },
+        "parameters": {
+          "type": "object",
+          "required": [
+            "candidate",
+            "effect"
+          ],
+          "properties": {
+            "candidate": {
+              "type": "string",
+              "pattern": "\\S"
+            },
+            "effect": {
+              "type": "string",
+              "pattern": "\\S"
+            }
+          },
+          "additionalProperties": false
+        }
+      }
+    },
+    {
+      "properties": {
+        "engine": {
+          "const": "bayesian"
+        },
+        "mathematical_version": {
+          "const": "fnl-2013-exact"
+        },
+        "model": {
+          "$ref": "#/$defs/bayes"
+        },
+        "operation": {
+          "const": "infer"
+        },
+        "parameters": {
+          "type": "object",
+          "required": [
+            "hypothesis",
+            "evidence"
+          ],
+          "properties": {
+            "hypothesis": {
+              "type": "string",
+              "pattern": "\\S"
+            },
+            "evidence": {
+              "$ref": "#/$defs/assignment"
+            },
+            "alternatives": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "minItems": 2,
+              "uniqueItems": true,
+              "maxItems": 2
+            }
+          },
+          "additionalProperties": false
+        }
+      }
+    },
+    {
+      "properties": {
+        "engine": {
+          "const": "bayesian"
+        },
+        "mathematical_version": {
+          "const": "fnl-2013-exact"
+        },
+        "model": {
+          "$ref": "#/$defs/bayes"
+        },
+        "operation": {
+          "const": "sensitivity"
+        },
+        "parameters": {
+          "type": "object",
+          "required": [
+            "hypothesis",
+            "evidence",
+            "scenarios"
+          ],
+          "properties": {
+            "hypothesis": {
+              "type": "string",
+              "pattern": "\\S"
+            },
+            "evidence": {
+              "$ref": "#/$defs/assignment"
+            },
+            "scenarios": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/scenario"
+              },
+              "minItems": 1,
+              "uniqueItems": false
+            },
+            "alternatives": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "minItems": 2,
+              "uniqueItems": true,
+              "maxItems": 2
+            }
+          },
+          "additionalProperties": false
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "labels": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "\\S"
+      },
+      "minItems": 0,
+      "uniqueItems": true
+    },
+    "assignment": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string",
+        "pattern": "\\S"
+      },
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "\\S"
+      }
+    },
+    "domains": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string",
+        "pattern": "\\S"
+      },
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "pattern": "\\S"
+        },
+        "minItems": 1,
+        "uniqueItems": true
+      }
+    },
+    "probability": {
+      "anyOf": [
+        {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        {
+          "type": "string",
+          "pattern": "\\S"
+        }
+      ]
+    },
+    "formula": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "eq"
+          ],
+          "properties": {
+            "eq": {
+              "$ref": "#/$defs/assignment",
+              "minProperties": 1,
+              "maxProperties": 1
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "not"
+          ],
+          "properties": {
+            "not": {
+              "$ref": "#/$defs/formula"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "all"
+          ],
+          "properties": {
+            "all": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/formula"
+              },
+              "minItems": 1,
+              "uniqueItems": false
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "any"
+          ],
+          "properties": {
+            "any": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/formula"
+              },
+              "minItems": 1,
+              "uniqueItems": false
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "entry": {
+      "type": "object",
+      "required": [
+        "id",
+        "kind",
+        "text"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "\\S"
+        },
+        "kind": {
+          "enum": [
+            "act",
+            "event",
+            "participant",
+            "condition",
+            "relation",
+            "sequence",
+            "source",
+            "proposition",
+            "hypothesis",
+            "support",
+            "contradiction"
+          ]
+        },
+        "text": {
+          "type": "string",
+          "pattern": "\\S"
+        },
+        "refs": {
+          "$ref": "#/$defs/labels"
+        },
+        "state": {
+          "enum": [
+            "accredited",
+            "refuted",
+            "disputed",
+            "unknown",
+            "pending"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "case": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "id",
+        "reference_event",
+        "entries"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "1"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "\\S"
+        },
+        "reference_event": {
+          "type": "string",
+          "pattern": "\\S"
+        },
+        "entries": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/entry"
+          },
+          "minItems": 0,
+          "uniqueItems": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "scm": {
+      "type": "object",
+      "required": [
+        "exogenous",
+        "endogenous",
+        "equations"
+      ],
+      "properties": {
+        "exogenous": {
+          "$ref": "#/$defs/domains"
+        },
+        "endogenous": {
+          "$ref": "#/$defs/domains"
+        },
+        "equations": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "additionalProperties": {
+            "type": "object",
+            "required": [
+              "parents",
+              "rows"
+            ],
+            "properties": {
+              "parents": {
+                "$ref": "#/$defs/labels"
+              },
+              "rows": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "when",
+                    "then"
+                  ],
+                  "properties": {
+                    "when": {
+                      "$ref": "#/$defs/assignment"
+                    },
+                    "then": {
+                      "type": "string",
+                      "pattern": "\\S"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "minItems": 0,
+                "uniqueItems": false
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "prior": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "when",
+              "then"
+            ],
+            "properties": {
+              "when": {
+                "$ref": "#/$defs/assignment"
+              },
+              "then": {
+                "$ref": "#/$defs/probability"
+              }
+            },
+            "additionalProperties": false
+          },
+          "minItems": 0,
+          "uniqueItems": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "ness": {
+      "type": "object",
+      "required": [
+        "conditions",
+        "complete",
+        "mechanisms"
+      ],
+      "properties": {
+        "conditions": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "additionalProperties": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          }
+        },
+        "complete": {
+          "type": "boolean"
+        },
+        "mechanisms": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "effect",
+              "requires",
+              "law",
+              "provenance"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "effect": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "requires": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "\\S"
+                },
+                "minItems": 1,
+                "uniqueItems": true
+              },
+              "law": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "provenance": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "\\S"
+                },
+                "minItems": 1,
+                "uniqueItems": true
+              }
+            },
+            "additionalProperties": false
+          },
+          "minItems": 0,
+          "uniqueItems": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "bayes": {
+      "type": "object",
+      "required": [
+        "domains",
+        "nodes"
+      ],
+      "properties": {
+        "domains": {
+          "$ref": "#/$defs/domains"
+        },
+        "nodes": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "additionalProperties": {
+            "type": "object",
+            "required": [
+              "parents",
+              "rows"
+            ],
+            "properties": {
+              "parents": {
+                "$ref": "#/$defs/labels"
+              },
+              "rows": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "when",
+                    "then"
+                  ],
+                  "properties": {
+                    "when": {
+                      "$ref": "#/$defs/assignment"
+                    },
+                    "then": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string",
+                        "pattern": "\\S"
+                      },
+                      "additionalProperties": {
+                        "$ref": "#/$defs/probability"
+                      }
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "minItems": 0,
+                "uniqueItems": false
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "scenario": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "node",
+          "when",
+          "then"
+        ],
+        "properties": {
+          "node": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "when": {
+            "$ref": "#/$defs/assignment"
+          },
+          "then": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string",
+              "pattern": "\\S"
+            },
+            "additionalProperties": {
+              "$ref": "#/$defs/probability"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "minItems": 1,
+      "uniqueItems": false
+    }
+  }
+}

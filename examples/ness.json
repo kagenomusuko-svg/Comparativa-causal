@@ -1,0 +1,71 @@
+{
+  "schema_version": "1",
+  "case": {
+    "schema_version": "1",
+    "id": "sintetico-v1",
+    "reference_event": "E",
+    "entries": [
+      {
+        "id": "E",
+        "kind": "event",
+        "text": "Se activa un indicador ficticio.",
+        "state": "disputed"
+      },
+      {
+        "id": "S",
+        "kind": "source",
+        "text": "Regla estipulada para el ejemplo sintético."
+      }
+    ]
+  },
+  "engine": "ness",
+  "mathematical_version": "wright-1985-declared",
+  "operation": "evaluate",
+  "model": {
+    "conditions": {
+      "A": true,
+      "B": true,
+      "Y": true
+    },
+    "mechanisms": [
+      {
+        "id": "A-path",
+        "effect": "Y",
+        "requires": [
+          "A"
+        ],
+        "law": "Mecanismo sintético",
+        "provenance": [
+          "S"
+        ]
+      },
+      {
+        "id": "B-path",
+        "effect": "Y",
+        "requires": [
+          "B"
+        ],
+        "law": "Mecanismo sintético",
+        "provenance": [
+          "S"
+        ]
+      }
+    ],
+    "complete": true
+  },
+  "parameters": {
+    "candidate": "A",
+    "effect": "Y"
+  },
+  "modeling_hypotheses": [
+    "E se representa mediante la consulta del motor."
+  ],
+  "assumptions": [
+    "Los parámetros son sintéticos y estipulados."
+  ],
+  "provenance": {
+    "/model": [
+      "S"
+    ]
+  }
+}

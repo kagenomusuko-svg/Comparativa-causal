@@ -1,0 +1,126 @@
+{
+  "schema_version": "1",
+  "case": {
+    "schema_version": "1",
+    "id": "sintetico-v1",
+    "reference_event": "E",
+    "entries": [
+      {
+        "id": "E",
+        "kind": "event",
+        "text": "Se activa un indicador ficticio.",
+        "state": "disputed"
+      },
+      {
+        "id": "S",
+        "kind": "source",
+        "text": "Regla estipulada para el ejemplo sintético."
+      }
+    ]
+  },
+  "engine": "bayesian",
+  "mathematical_version": "fnl-2013-exact",
+  "operation": "infer",
+  "model": {
+    "domains": {
+      "H": [
+        "0",
+        "1"
+      ],
+      "E": [
+        "0",
+        "1"
+      ],
+      "D": [
+        "0",
+        "1"
+      ]
+    },
+    "nodes": {
+      "H": {
+        "parents": [],
+        "rows": [
+          {
+            "when": {},
+            "then": {
+              "0": "1/2",
+              "1": "1/2"
+            }
+          }
+        ]
+      },
+      "E": {
+        "parents": [
+          "H"
+        ],
+        "rows": [
+          {
+            "when": {
+              "H": "0"
+            },
+            "then": {
+              "0": "3/4",
+              "1": "1/4"
+            }
+          },
+          {
+            "when": {
+              "H": "1"
+            },
+            "then": {
+              "0": "1/4",
+              "1": "3/4"
+            }
+          }
+        ]
+      },
+      "D": {
+        "parents": [
+          "E"
+        ],
+        "rows": [
+          {
+            "when": {
+              "E": "0"
+            },
+            "then": {
+              "0": "1",
+              "1": "0"
+            }
+          },
+          {
+            "when": {
+              "E": "1"
+            },
+            "then": {
+              "0": "0",
+              "1": "1"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "parameters": {
+    "hypothesis": "H",
+    "evidence": {
+      "E": "1",
+      "D": "1"
+    },
+    "alternatives": [
+      "1",
+      "0"
+    ]
+  },
+  "modeling_hypotheses": [
+    "E se representa mediante la consulta del motor."
+  ],
+  "assumptions": [
+    "Los parámetros son sintéticos y estipulados."
+  ],
+  "provenance": {
+    "/model": [
+      "S"
+    ]
+  }
+}

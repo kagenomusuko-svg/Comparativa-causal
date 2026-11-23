@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "comparativa-causal"
+version = "0.1.0"
+description = "Motores finitos de análisis causal y probabilístico"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.scripts]
+causal = "causal.__main__:main"
+
+[tool.setuptools.packages.find]
+include = ["causal*"]

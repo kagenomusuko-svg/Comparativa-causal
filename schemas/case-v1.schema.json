@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "case-v1",
+  "$ref": "#/$defs/case",
+  "$defs": {
+    "case": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "id",
+        "reference_event",
+        "entries"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "1"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "\\S"
+        },
+        "reference_event": {
+          "type": "string",
+          "pattern": "\\S"
+        },
+        "entries": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/entry"
+          },
+          "minItems": 0,
+          "uniqueItems": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "entry": {
+      "type": "object",
+      "required": [
+        "id",
+        "kind",
+        "text"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "\\S"
+        },
+        "kind": {
+          "enum": [
+            "act",
+            "event",
+            "participant",
+            "condition",
+            "relation",
+            "sequence",
+            "source",
+            "proposition",
+            "hypothesis",
+            "support",
+            "contradiction"
+          ]
+        },
+        "text": {
+          "type": "string",
+          "pattern": "\\S"
+        },
+        "refs": {
+          "$ref": "#/$defs/labels"
+        },
+        "state": {
+          "enum": [
+            "accredited",
+            "refuted",
+            "disputed",
+            "unknown",
+            "pending"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "labels": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "\\S"
+      },
+      "minItems": 0,
+      "uniqueItems": true
+    }
+  }
+}

@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "result-v1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "software_version",
+    "case_id",
+    "engine",
+    "mathematical_version",
+    "operation",
+    "status",
+    "result",
+    "domain_of_validity",
+    "effective_input",
+    "effective_options",
+    "steps",
+    "diagnostics"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1"
+    },
+    "software_version": {
+      "type": "string",
+      "pattern": "\\S"
+    },
+    "case_id": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "\\S"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "engine": {},
+    "mathematical_version": {},
+    "operation": {},
+    "status": {
+      "enum": [
+        "success",
+        "insufficient_data",
+        "invalid_model",
+        "not_identifiable",
+        "undefined_operation",
+        "limit_exceeded",
+        "execution_error"
+      ]
+    },
+    "result": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "domain_of_validity": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "\\S"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "effective_input": {},
+    "effective_options": {
+      "anyOf": [
+        {
+          "type": "object",
+          "required": [
+            "max_steps"
+          ],
+          "properties": {
+            "max_steps": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "steps": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "diagnostics": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "\\S"
+      },
+      "minItems": 0,
+      "uniqueItems": false
+    }
+  },
+  "additionalProperties": false
+}
