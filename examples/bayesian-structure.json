@@ -1,0 +1,118 @@
+{
+  "schema_version": "1",
+  "case": {
+    "schema_version": "1",
+    "id": "sintetico-v1",
+    "reference_event": "E",
+    "entries": [
+      {
+        "id": "E",
+        "kind": "event",
+        "text": "Se activa un indicador ficticio.",
+        "state": "disputed"
+      },
+      {
+        "id": "S",
+        "kind": "source",
+        "text": "Regla estipulada para el ejemplo sintético."
+      }
+    ]
+  },
+  "engine": "bayesian",
+  "mathematical_version": "bn-exact-fnl-2012-2013",
+  "operation": "structure",
+  "model": {
+    "domains": {
+      "H": [
+        "0",
+        "1"
+      ],
+      "A": [
+        "0",
+        "1"
+      ],
+      "E": [
+        "0",
+        "1"
+      ]
+    },
+    "nodes": {
+      "H": {
+        "parents": []
+      },
+      "A": {
+        "parents": []
+      },
+      "E": {}
+    },
+    "idioms": [
+      {
+        "id": "evidence_accuracy",
+        "kind": "evidence_accuracy",
+        "roles": {
+          "target": "H",
+          "accuracy": "A",
+          "report": "E"
+        },
+        "provenance": [
+          "S"
+        ]
+      }
+    ]
+  },
+  "parameters": {
+    "hypothesis": "H",
+    "reports": [
+      "E"
+    ]
+  },
+  "modeling_hypotheses": [
+    "E se representa mediante la consulta del motor."
+  ],
+  "assumptions": [
+    "Estructura, observaciones y parámetros del ejemplo estipulados como sintéticos."
+  ],
+  "provenance": {
+    "/model": [
+      "S"
+    ]
+  },
+  "lineage": {
+    "/model": {
+      "basis": [
+        {
+          "kind": "assumption",
+          "ref": "Estructura, observaciones y parámetros del ejemplo estipulados como sintéticos."
+        }
+      ]
+    }
+  },
+  "lineage_groups": [
+    {
+      "record": "/model",
+      "members": [
+        "/model/domains/A/0",
+        "/model/domains/A/1",
+        "/model/domains/E/0",
+        "/model/domains/E/1",
+        "/model/domains/H/0",
+        "/model/domains/H/1",
+        "/model/idioms/0/id",
+        "/model/idioms/0/kind",
+        "/model/idioms/0/provenance/0",
+        "/model/idioms/0/roles/accuracy",
+        "/model/idioms/0/roles/report",
+        "/model/idioms/0/roles/target",
+        "/model/nodes/A/parents",
+        "/model/nodes/E",
+        "/model/nodes/H/parents",
+        "/parameters/hypothesis",
+        "/parameters/reports/0"
+      ]
+    }
+  ],
+  "options": {
+    "provenance_mode": "strict"
+  },
+  "reconstruction_id": "bayesian-structure"
+}

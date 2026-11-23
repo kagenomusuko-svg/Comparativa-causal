@@ -107,6 +107,10 @@
             "additionalProperties": false
           },
           "minItems": 0
+        },
+        "locator": {
+          "type": "string",
+          "pattern": "\\S"
         }
       },
       "additionalProperties": false

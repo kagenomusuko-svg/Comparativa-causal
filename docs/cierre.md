@@ -1,4 +1,6 @@
-# Informe de cierre v0.2.0
+# Informe de cierre
+
+## Base histórica 0.2.0
 
 | Motor | Definición y condiciones | Operaciones y comprobaciones |
 | --- | --- | --- |
@@ -54,7 +56,31 @@ soporte. La identificación general queda fuera del dominio implementado.
 AC2 y la composición de certificados pueden agotar el presupuesto.
 NESS requiere estabilidad y cobertura declaradas para las conclusiones
 que las presuponen. Los patrones bayesianos se basan en el texto
-completo del artículo metodológico de 2012. El artículo de 2013 se
-consultó mediante su resumen y su texto completo queda pendiente de
-verificación bibliográfica. No se introducen cifras para suplir CPT
+completo del artículo metodológico de 2012. En 0.2.0 se había consultado el resumen de 2013. Su revisión completa
+corresponde a la adecuación de 0.3.0 descrita más abajo. No se introducen cifras para suplir CPT
 ausentes ni se infieren mecanismos o relaciones a partir de documentos.
+
+## Adecuaciones de 0.3.0
+
+Se conserva la entrega de 0.2.0 como base histórica. La revisión de 0.3.0
+consultó el texto editorial completo de 2013, incluidos sus diagramas
+y tablas, y el trabajo complementario de 2012. El perfil nuevo añade
+exactitud, oportunidad necesaria, motivo agregado, dependencia entre
+informes, coartada con exactitud, explicaciones competitivas,
+exclusión con calibración, análisis de estructura, actualización por
+etapas y sensibilidad de evidencia. Las pruebas diferencian las
+reproducciones numéricas de las verificaciones de estructura
+para figuras sin tablas completas. [Correspondencia académica](fnl.md)
+
+La trazabilidad cubre hojas individuales y agrupaciones enumeradas,
+aplica un modo estricto opcional general y exige cobertura de
+probabilidades en el perfil bayesiano nuevo. Distingue búsquedas
+observadas, dependencias matemáticas exactas entre artefactos y
+dependencias de entrada conservadoras. La invalidación acepta
+rutas o una solicitud revisada y conserva el ámbito de los certificados
+por reconstrucción. [Trazabilidad y comandos](contrato.md)
+
+La suite ejecuta 62 pruebas con 11 ejemplos, incluida la regresión de
+0.2.0, y valida esquemas de entrada, resultado, lote, cobertura e
+invalidación. El registro de GitHub Actions en `main` identifica
+el estado de la matriz para cada commit.

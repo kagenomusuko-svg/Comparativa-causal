@@ -47,6 +47,9 @@ asignaciones explícitas del modelo.
 | NESS | `reconstruct` | `candidate`, `effect` | Veredictos por reconstrucción, pasos de cada certificado y lagunas |
 | Bayes | `infer` | `hypothesis`, `evidence`, opcional `alternatives` | Priori, posterior, masa de evidencia y verosimilitudes comparables |
 | Bayes | `sensitivity` | Lo anterior y `scenarios` | Base y resultados por escenario con diferencias posteriores |
+| Bayes | `structure` | `hypothesis`, `reports` | Grafo, fragmentos, tipos de trayectorias y nodos sin CPT |
+| Bayes | `evidence_sequence` | `hypothesis`, `evidence`, `sequence` | Actualización exacta por acumulación |
+| Bayes | `evidence_sensitivity` | `hypothesis`, `evidence`, `reports` | Posteriores y extremos al variar cada informe |
 
 Los predicados SCM en `query` y `observed` son asignaciones conjuntivas.
 `do` y `baseline` asignan variables endógenas. Una fila estructural contiene
@@ -95,7 +98,7 @@ Los roles se asignan a variables declaradas y `provenance` referencia
 registros del caso. Los nodos pueden declarar padres adicionales. Para
 un destino cubierto por un patrón, el campo `parents` se puede omitir.
 Cada CPT se valida contra los padres efectivos. El resultado registra
-los arcos y su origen metodológico. Consulte [roles y semántica](matematicas.md)
+los arcos y su origen metodológico. Consulte [roles y semántica](fnl.md)
 y el [ejemplo de fiabilidad](../examples/bayesian-testimony.json).
 
 ## Trazabilidad
@@ -111,9 +114,65 @@ o `/parameters`. Cada valor declara `basis`, lista de pares
 `assumption`, y opcionalmente `depends_on` con otros punteros ya
 declarados. Se validan los punteros y tipos de registros y se rechazan
 ciclos. El sobre conserva el grafo de dependencias declarado y el
-registro documental con el que se resuelve. La traza tiene granularidad
-de entrada declarada. No infiere todas las dependencias semánticas
-mínimas del resultado ni obliga a documentar parámetros omitidos.
+registro documental con el que se resuelve. Desde 0.3.0 se adjuntan la cobertura y la traza de la ejecución.
+
+### Cobertura e invalidación en 0.3.0
+
+`audit_coverage(request)` y `causal --coverage solicitud.json` enumeran las hojas
+JSON de `model` y `parameters`, incluidos los contenedores vacíos. Una
+entrada cuenta como `individual` si tiene un registro `lineage` en su
+puntero exacto. Una entrada agrupada debe aparecer explícitamente en
+`lineage_groups[].members`, asociada a un `record` existente.
+Se permiten grupos que comparten un supuesto o referencia común. Un
+elemento no puede pertenecer a varios grupos, y su registro individual
+tiene precedencia. Los vínculos generales en `/model` y `provenance`
+no cubren automáticamente elementos descendientes. Cada ficha informa
+los tipos de base directos y transitivos. `derived` enlaza a otro
+puntero registrado y requiere `derivation` con la operación declarada.
+Se comprueban referencias y aciclicidad. Los registros documentales
+pueden precisar su ubicación mediante `locator`.
+
+`options.provenance_mode` admite `compatible` (por defecto) y `strict`.
+El modo compatible conserva el cálculo histórico y expone las brechas.
+El estricto devuelve `insufficient_data` cuando queda una hoja sin
+procedencia. El perfil bayesiano nuevo verifica la cobertura de cada
+coeficiente de tablas, escenarios y evidencia blanda incluso en el
+modo compatible. La cobertura verifica declaraciones y enlaces.
+`declared_unverified` indica que el sistema no autentica documentos
+ni comprueba la veracidad de una afirmación o de una derivación aportada.
+
+`trace.execution.outputs` conserva etapas y punteros a fuentes,
+hipótesis, supuestos, parámetros y artefactos matemáticos. Las aristas
+`exact` entre salidas identifican los artefactos usados en una fórmula,
+como masa conjunta y masa observada para la posterior. `observed_reads`
+registra las búsquedas tabulares instrumentadas, con rutas exactas
+para SCM y Bayes. Las dependencias de entrada por salida son
+`conservative` y abarcan los requisitos de cálculo y validación que
+podrían influir en un resultado revisado. La traza marca `unknown`
+si no hay un resultado de cálculo o en la consulta de invalidación
+de una ejecución histórica sin traza de resultados.
+
+`affected(result, pointers)` y `affected_by_request(result, revised)`
+devuelven punteros de salidas que requieren recálculo. La segunda
+función compara la entrada efectiva con la nueva solicitud. Las
+inserciones y eliminaciones en listas se registran en el contenedor.
+En el primer modo, el llamador debe indicar la lista al modificar sus
+posiciones. Se examinan referencias transitivas y cambios estructurales.
+NESS identifica también los certificados por reconstrucción. Las
+revisiones pueden devolver un conjunto conservador. Se debe ejecutar
+la solicitud revisada para conocer la nueva conclusión.
+
+```bash
+causal --coverage examples/bayesian-strict.json
+causal examples/bayesian-strict.json > /tmp/causal-result.json
+causal --changes examples/audit/cpt-change.json /tmp/causal-result.json
+causal --revised examples/bayesian-strict.json /tmp/causal-result.json
+```
+
+Cada operación de auditoría tiene su propio esquema
+[schema de cobertura](../schemas/coverage-v1.schema.json) y
+[schema de invalidación](../schemas/affected-v1.schema.json).
+El esquema de lote sigue aceptando resultados históricos v1.
 
 ## Sobre de resultados
 

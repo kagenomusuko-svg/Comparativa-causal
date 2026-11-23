@@ -5,6 +5,7 @@ from fractions import Fraction
 from ..core import (assignment, dag, domains, fields, labels, matches, probability,
                     require, rows, worlds)
 
+from ..core.audit import pointer_child
 from .identification import identify
 
 VERSION = "pearl-2010"
@@ -28,6 +29,7 @@ class SCM:
             self.parents[name] = labels(equation["parents"])
         self.order = tuple(n for n in dag(self.parents, self.states) if n in self.v)
         self.tables = {}
+        self.row_pointers = {}
         for name in self.order:
             def decode(value):
                 require(value in self.v[name], "Salida estructural fuera del dominio")
@@ -35,6 +37,10 @@ class SCM:
 
             self.tables[name] = rows(equations[name]["rows"], self.parents[name],
                                      self.states, budget, decode)
+            prefix = pointer_child("/model/equations", name)
+            self.row_pointers[name] = {
+                key: f"{prefix}/rows/{index}/then" for index, key in enumerate(self.tables[name])
+            }
         self.budget = budget
         self.prior = None
         if "prior" in model:
@@ -49,6 +55,7 @@ class SCM:
                 state[name] = interventions[name]
             else:
                 key = tuple(state[parent] for parent in self.parents[name])
+                self.budget.reads.add(self.row_pointers[name][key])
                 state[name] = self.tables[name][key]
         return {name: state[name] for name in self.v}
 

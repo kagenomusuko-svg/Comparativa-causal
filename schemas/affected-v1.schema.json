@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "status",
+    "changes",
+    "affected",
+    "requires_recalculation"
+  ],
+  "properties": {
+    "status": {
+      "enum": [
+        "exact",
+        "conservative",
+        "unknown"
+      ]
+    },
+    "changes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^/"
+      },
+      "minItems": 0
+    },
+    "affected": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^/"
+      },
+      "minItems": 0
+    },
+    "requires_recalculation": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "additionalProperties": false
+}

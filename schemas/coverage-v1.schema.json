@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "complete",
+    "elements"
+  ],
+  "properties": {
+    "complete": {
+      "type": "boolean"
+    },
+    "elements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "pointer",
+          "record",
+          "coverage",
+          "basis_kinds"
+        ],
+        "properties": {
+          "pointer": {
+            "type": "string",
+            "pattern": "^/"
+          },
+          "record": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^/"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "coverage": {
+            "enum": [
+              "individual",
+              "grouped",
+              "missing"
+            ]
+          },
+          "basis_kinds": {
+            "type": "array",
+            "items": {
+              "enum": [
+                "document",
+                "assertion",
+                "hypothesis",
+                "assumption",
+                "derived"
+              ]
+            },
+            "minItems": 0
+          }
+        },
+        "additionalProperties": false
+      },
+      "minItems": 0
+    }
+  },
+  "additionalProperties": false
+}

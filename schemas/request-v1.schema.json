@@ -69,6 +69,12 @@
         "max_steps": {
           "type": "integer",
           "minimum": 1
+        },
+        "provenance_mode": {
+          "enum": [
+            "compatible",
+            "strict"
+          ]
         }
       },
       "additionalProperties": false
@@ -86,6 +92,32 @@
     "reconstruction_id": {
       "type": "string",
       "pattern": "\\S"
+    },
+    "lineage_groups": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "record",
+          "members"
+        ],
+        "properties": {
+          "record": {
+            "type": "string",
+            "pattern": "^/"
+          },
+          "members": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^/"
+            },
+            "minItems": 1
+          }
+        },
+        "additionalProperties": false
+      },
+      "minItems": 0
     }
   },
   "additionalProperties": false,
@@ -413,10 +445,306 @@
           "const": "bayesian"
         },
         "mathematical_version": {
-          "const": "fnl-2013-exact"
+          "const": "bn-exact-fnl-2012-2013"
         },
         "model": {
           "$ref": "#/$defs/bayes"
+        },
+        "operation": {
+          "const": "infer"
+        },
+        "parameters": {
+          "type": "object",
+          "required": [
+            "hypothesis",
+            "evidence"
+          ],
+          "properties": {
+            "hypothesis": {
+              "type": "string",
+              "pattern": "\\S"
+            },
+            "evidence": {
+              "$ref": "#/$defs/assignment"
+            },
+            "alternatives": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "minItems": 2,
+              "uniqueItems": true,
+              "maxItems": 2
+            },
+            "soft_evidence": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "object",
+                "additionalProperties": {
+                  "$ref": "#/$defs/probability"
+                }
+              }
+            }
+          },
+          "additionalProperties": false
+        }
+      }
+    },
+    {
+      "properties": {
+        "engine": {
+          "const": "bayesian"
+        },
+        "mathematical_version": {
+          "const": "bn-exact-fnl-2012-2013"
+        },
+        "model": {
+          "$ref": "#/$defs/bayes"
+        },
+        "operation": {
+          "const": "sensitivity"
+        },
+        "parameters": {
+          "type": "object",
+          "required": [
+            "hypothesis",
+            "evidence",
+            "scenarios"
+          ],
+          "properties": {
+            "hypothesis": {
+              "type": "string",
+              "pattern": "\\S"
+            },
+            "evidence": {
+              "$ref": "#/$defs/assignment"
+            },
+            "scenarios": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/scenario"
+              },
+              "minItems": 1,
+              "uniqueItems": false
+            },
+            "alternatives": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "minItems": 2,
+              "uniqueItems": true,
+              "maxItems": 2
+            },
+            "soft_evidence": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "object",
+                "additionalProperties": {
+                  "$ref": "#/$defs/probability"
+                }
+              }
+            }
+          },
+          "additionalProperties": false
+        }
+      }
+    },
+    {
+      "properties": {
+        "engine": {
+          "const": "ness"
+        },
+        "mathematical_version": {
+          "const": "wright-1985-declared"
+        },
+        "operation": {
+          "const": "reconstruct"
+        },
+        "model": {
+          "$ref": "#/$defs/ness_alternatives"
+        },
+        "parameters": {
+          "type": "object",
+          "required": [
+            "candidate",
+            "effect"
+          ],
+          "properties": {
+            "candidate": {
+              "type": "string",
+              "pattern": "\\S"
+            },
+            "effect": {
+              "type": "string",
+              "pattern": "\\S"
+            }
+          },
+          "additionalProperties": false
+        }
+      }
+    },
+    {
+      "properties": {
+        "engine": {
+          "const": "bayesian"
+        },
+        "mathematical_version": {
+          "const": "bn-exact-fnl-2012-2013"
+        },
+        "operation": {
+          "const": "structure"
+        },
+        "model": {
+          "$ref": "#/$defs/bayes_structure"
+        },
+        "parameters": {
+          "type": "object",
+          "required": [
+            "hypothesis",
+            "reports"
+          ],
+          "properties": {
+            "hypothesis": {
+              "type": "string",
+              "minLength": 1
+            },
+            "reports": {
+              "$ref": "#/$defs/labels"
+            }
+          },
+          "additionalProperties": false
+        }
+      }
+    },
+    {
+      "properties": {
+        "engine": {
+          "const": "bayesian"
+        },
+        "mathematical_version": {
+          "const": "bn-exact-fnl-2012-2013"
+        },
+        "operation": {
+          "const": "evidence_sequence"
+        },
+        "model": {
+          "$ref": "#/$defs/bayes"
+        },
+        "parameters": {
+          "type": "object",
+          "required": [
+            "hypothesis",
+            "evidence",
+            "sequence"
+          ],
+          "properties": {
+            "hypothesis": {
+              "type": "string",
+              "minLength": 1
+            },
+            "evidence": {
+              "$ref": "#/$defs/assignment"
+            },
+            "sequence": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/assignment"
+              },
+              "minItems": 1
+            },
+            "soft_evidence": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "object",
+                "additionalProperties": {
+                  "$ref": "#/$defs/probability"
+                }
+              }
+            },
+            "alternatives": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "minItems": 2,
+              "maxItems": 2,
+              "uniqueItems": true
+            }
+          },
+          "additionalProperties": false
+        }
+      }
+    },
+    {
+      "properties": {
+        "engine": {
+          "const": "bayesian"
+        },
+        "mathematical_version": {
+          "const": "bn-exact-fnl-2012-2013"
+        },
+        "operation": {
+          "const": "evidence_sensitivity"
+        },
+        "model": {
+          "$ref": "#/$defs/bayes"
+        },
+        "parameters": {
+          "type": "object",
+          "required": [
+            "hypothesis",
+            "evidence",
+            "reports"
+          ],
+          "properties": {
+            "hypothesis": {
+              "type": "string",
+              "minLength": 1
+            },
+            "evidence": {
+              "$ref": "#/$defs/assignment"
+            },
+            "reports": {
+              "$ref": "#/$defs/labels"
+            },
+            "soft_evidence": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "object",
+                "additionalProperties": {
+                  "$ref": "#/$defs/probability"
+                }
+              }
+            },
+            "alternatives": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "minItems": 2,
+              "maxItems": 2,
+              "uniqueItems": true
+            }
+          },
+          "additionalProperties": false
+        }
+      }
+    },
+    {
+      "properties": {
+        "engine": {
+          "const": "bayesian"
+        },
+        "mathematical_version": {
+          "const": "fnl-2013-exact"
+        },
+        "model": {
+          "$ref": "#/$defs/bayes_legacy"
         },
         "operation": {
           "const": "infer"
@@ -459,7 +787,7 @@
           "const": "fnl-2013-exact"
         },
         "model": {
-          "$ref": "#/$defs/bayes"
+          "$ref": "#/$defs/bayes_legacy"
         },
         "operation": {
           "const": "sensitivity"
@@ -496,40 +824,6 @@
               "minItems": 2,
               "uniqueItems": true,
               "maxItems": 2
-            }
-          },
-          "additionalProperties": false
-        }
-      }
-    },
-    {
-      "properties": {
-        "engine": {
-          "const": "ness"
-        },
-        "mathematical_version": {
-          "const": "wright-1985-declared"
-        },
-        "operation": {
-          "const": "reconstruct"
-        },
-        "model": {
-          "$ref": "#/$defs/ness_alternatives"
-        },
-        "parameters": {
-          "type": "object",
-          "required": [
-            "candidate",
-            "effect"
-          ],
-          "properties": {
-            "candidate": {
-              "type": "string",
-              "pattern": "\\S"
-            },
-            "effect": {
-              "type": "string",
-              "pattern": "\\S"
             }
           },
           "additionalProperties": false
@@ -724,6 +1018,10 @@
             "additionalProperties": false
           },
           "minItems": 0
+        },
+        "locator": {
+          "type": "string",
+          "pattern": "\\S"
         }
       },
       "additionalProperties": false
@@ -1034,12 +1332,13 @@
                   "document",
                   "assertion",
                   "hypothesis",
-                  "assumption"
+                  "assumption",
+                  "derived"
                 ]
               },
               "ref": {
                 "type": "string",
-                "pattern": "\\S"
+                "minLength": 1
               }
             },
             "additionalProperties": false
@@ -1047,7 +1346,16 @@
           "minItems": 1
         },
         "depends_on": {
-          "$ref": "#/$defs/labels"
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^/"
+          },
+          "minItems": 0
+        },
+        "derivation": {
+          "type": "string",
+          "minLength": 1
         }
       },
       "additionalProperties": false
@@ -1254,6 +1562,12 @@
                 "pattern": "\\S"
               },
               "minItems": 1
+            },
+            "settings": {
+              "type": "object",
+              "required": [],
+              "properties": {},
+              "additionalProperties": false
             }
           },
           "additionalProperties": false
@@ -1304,6 +1618,12 @@
                 "pattern": "\\S"
               },
               "minItems": 1
+            },
+            "settings": {
+              "type": "object",
+              "required": [],
+              "properties": {},
+              "additionalProperties": false
             }
           },
           "additionalProperties": false
@@ -1352,6 +1672,12 @@
                 "pattern": "\\S"
               },
               "minItems": 1
+            },
+            "settings": {
+              "type": "object",
+              "required": [],
+              "properties": {},
+              "additionalProperties": false
             }
           },
           "additionalProperties": false
@@ -1412,6 +1738,12 @@
                 "pattern": "\\S"
               },
               "minItems": 1
+            },
+            "settings": {
+              "type": "object",
+              "required": [],
+              "properties": {},
+              "additionalProperties": false
             }
           },
           "additionalProperties": false
@@ -1467,6 +1799,950 @@
                 "pattern": "\\S"
               },
               "minItems": 1
+            },
+            "settings": {
+              "type": "object",
+              "required": [],
+              "properties": {},
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "id",
+            "kind",
+            "roles",
+            "provenance"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "kind": {
+              "const": "evidence_accuracy"
+            },
+            "roles": {
+              "type": "object",
+              "required": [
+                "target",
+                "report",
+                "accuracy"
+              ],
+              "properties": {
+                "target": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "report": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "accuracy": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "additionalProperties": false
+            },
+            "provenance": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "minItems": 1
+            },
+            "settings": {
+              "type": "object",
+              "required": [],
+              "properties": {},
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "id",
+            "kind",
+            "roles",
+            "provenance"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "kind": {
+              "const": "accuracy_components"
+            },
+            "roles": {
+              "type": "object",
+              "required": [
+                "target",
+                "report",
+                "accuracy",
+                "competence",
+                "objectivity",
+                "veracity"
+              ],
+              "properties": {
+                "target": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "report": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "accuracy": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "competence": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "objectivity": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "veracity": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "additionalProperties": false
+            },
+            "provenance": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "minItems": 1
+            },
+            "settings": {
+              "type": "object",
+              "required": [],
+              "properties": {},
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "id",
+            "kind",
+            "roles",
+            "provenance",
+            "settings"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "kind": {
+              "const": "necessary_opportunity"
+            },
+            "roles": {
+              "type": "object",
+              "required": [
+                "opportunity",
+                "hypothesis"
+              ],
+              "properties": {
+                "opportunity": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "hypothesis": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "additionalProperties": false
+            },
+            "provenance": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "minItems": 1
+            },
+            "settings": {
+              "type": "object",
+              "required": [
+                "opportunity_absent",
+                "hypothesis_true"
+              ],
+              "properties": {
+                "opportunity_absent": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "hypothesis_true": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "id",
+            "kind",
+            "roles",
+            "provenance"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "kind": {
+              "const": "aggregate_motive"
+            },
+            "roles": {
+              "type": "object",
+              "required": [
+                "aggregate",
+                "hypothesis",
+                "motives"
+              ],
+              "properties": {
+                "aggregate": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "hypothesis": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "motives": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "minItems": 2,
+                  "uniqueItems": true
+                }
+              },
+              "additionalProperties": false
+            },
+            "provenance": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "minItems": 1
+            },
+            "settings": {
+              "type": "object",
+              "required": [],
+              "properties": {},
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "id",
+            "kind",
+            "roles",
+            "provenance"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "kind": {
+              "const": "dependent_evidence"
+            },
+            "roles": {
+              "type": "object",
+              "required": [
+                "target",
+                "first_report",
+                "second_report"
+              ],
+              "properties": {
+                "target": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "first_report": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "second_report": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "dependency": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "additionalProperties": false
+            },
+            "provenance": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "minItems": 1
+            },
+            "settings": {
+              "type": "object",
+              "required": [],
+              "properties": {},
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "id",
+            "kind",
+            "roles",
+            "provenance"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "kind": {
+              "const": "alibi_accuracy"
+            },
+            "roles": {
+              "type": "object",
+              "required": [
+                "opportunity",
+                "hypothesis",
+                "accuracy",
+                "report"
+              ],
+              "properties": {
+                "opportunity": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "hypothesis": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "accuracy": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "report": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "additionalProperties": false
+            },
+            "provenance": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "minItems": 1
+            },
+            "settings": {
+              "type": "object",
+              "required": [],
+              "properties": {},
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "id",
+            "kind",
+            "roles",
+            "provenance"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "kind": {
+              "const": "explaining_away"
+            },
+            "roles": {
+              "type": "object",
+              "required": [
+                "cause_a",
+                "cause_b",
+                "effect"
+              ],
+              "properties": {
+                "cause_a": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "cause_b": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "effect": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "additionalProperties": false
+            },
+            "provenance": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "minItems": 1
+            },
+            "settings": {
+              "type": "object",
+              "required": [],
+              "properties": {},
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "id",
+            "kind",
+            "roles",
+            "provenance",
+            "settings"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "kind": {
+              "const": "exclusive_explanations"
+            },
+            "roles": {
+              "type": "object",
+              "required": [
+                "effect",
+                "selector",
+                "causes"
+              ],
+              "properties": {
+                "effect": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "selector": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "causes": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "minItems": 2,
+                  "uniqueItems": true
+                }
+              },
+              "additionalProperties": false
+            },
+            "provenance": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "minItems": 1
+            },
+            "settings": {
+              "type": "object",
+              "required": [
+                "active_states",
+                "pathways",
+                "impossible"
+              ],
+              "properties": {
+                "active_states": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "pathways": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "impossible": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "bayes_structure": {
+      "type": "object",
+      "required": [
+        "domains",
+        "nodes"
+      ],
+      "properties": {
+        "domains": {
+          "$ref": "#/$defs/domains"
+        },
+        "nodes": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "additionalProperties": {
+            "type": "object",
+            "required": [],
+            "properties": {
+              "parents": {
+                "$ref": "#/$defs/labels"
+              },
+              "rows": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "when",
+                    "then"
+                  ],
+                  "properties": {
+                    "when": {
+                      "$ref": "#/$defs/assignment"
+                    },
+                    "then": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string",
+                        "pattern": "\\S"
+                      },
+                      "additionalProperties": {
+                        "$ref": "#/$defs/probability"
+                      }
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "minItems": 0,
+                "uniqueItems": false
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "idioms": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidence_pattern"
+          },
+          "minItems": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "bayes_legacy": {
+      "type": "object",
+      "required": [
+        "domains",
+        "nodes"
+      ],
+      "properties": {
+        "domains": {
+          "$ref": "#/$defs/domains"
+        },
+        "nodes": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "additionalProperties": {
+            "type": "object",
+            "required": [
+              "rows"
+            ],
+            "properties": {
+              "parents": {
+                "$ref": "#/$defs/labels"
+              },
+              "rows": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "when",
+                    "then"
+                  ],
+                  "properties": {
+                    "when": {
+                      "$ref": "#/$defs/assignment"
+                    },
+                    "then": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string",
+                        "pattern": "\\S"
+                      },
+                      "additionalProperties": {
+                        "$ref": "#/$defs/probability"
+                      }
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "minItems": 0,
+                "uniqueItems": false
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "idioms": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidence_pattern_legacy"
+          },
+          "minItems": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "evidence_pattern_legacy": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "id",
+            "kind",
+            "roles",
+            "provenance"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "\\S"
+            },
+            "kind": {
+              "const": "evidence"
+            },
+            "roles": {
+              "type": "object",
+              "required": [
+                "target",
+                "report"
+              ],
+              "properties": {
+                "target": {
+                  "type": "string",
+                  "pattern": "\\S"
+                },
+                "report": {
+                  "type": "string",
+                  "pattern": "\\S"
+                }
+              },
+              "additionalProperties": false
+            },
+            "provenance": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "minItems": 1
+            },
+            "settings": {
+              "type": "object",
+              "required": [],
+              "properties": {},
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "id",
+            "kind",
+            "roles",
+            "provenance"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "\\S"
+            },
+            "kind": {
+              "const": "evidence_reliability"
+            },
+            "roles": {
+              "type": "object",
+              "required": [
+                "target",
+                "report",
+                "reliability"
+              ],
+              "properties": {
+                "target": {
+                  "type": "string",
+                  "pattern": "\\S"
+                },
+                "report": {
+                  "type": "string",
+                  "pattern": "\\S"
+                },
+                "reliability": {
+                  "type": "string",
+                  "pattern": "\\S"
+                }
+              },
+              "additionalProperties": false
+            },
+            "provenance": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "minItems": 1
+            },
+            "settings": {
+              "type": "object",
+              "required": [],
+              "properties": {},
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "id",
+            "kind",
+            "roles",
+            "provenance"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "\\S"
+            },
+            "kind": {
+              "const": "opportunity_motive"
+            },
+            "roles": {
+              "type": "object",
+              "required": [
+                "hypothesis"
+              ],
+              "properties": {
+                "hypothesis": {
+                  "type": "string",
+                  "pattern": "\\S"
+                },
+                "opportunity": {
+                  "type": "string",
+                  "pattern": "\\S"
+                },
+                "motive": {
+                  "type": "string",
+                  "pattern": "\\S"
+                }
+              },
+              "additionalProperties": false
+            },
+            "provenance": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "minItems": 1
+            },
+            "settings": {
+              "type": "object",
+              "required": [],
+              "properties": {},
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "id",
+            "kind",
+            "roles",
+            "provenance"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "\\S"
+            },
+            "kind": {
+              "const": "testimony_components"
+            },
+            "roles": {
+              "type": "object",
+              "required": [
+                "target",
+                "report",
+                "sensitivity",
+                "objectivity",
+                "veracity"
+              ],
+              "properties": {
+                "target": {
+                  "type": "string",
+                  "pattern": "\\S"
+                },
+                "report": {
+                  "type": "string",
+                  "pattern": "\\S"
+                },
+                "sensitivity": {
+                  "type": "string",
+                  "pattern": "\\S"
+                },
+                "objectivity": {
+                  "type": "string",
+                  "pattern": "\\S"
+                },
+                "veracity": {
+                  "type": "string",
+                  "pattern": "\\S"
+                }
+              },
+              "additionalProperties": false
+            },
+            "provenance": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "minItems": 1
+            },
+            "settings": {
+              "type": "object",
+              "required": [],
+              "properties": {},
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "id",
+            "kind",
+            "roles",
+            "provenance"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "\\S"
+            },
+            "kind": {
+              "const": "alibi"
+            },
+            "roles": {
+              "type": "object",
+              "required": [
+                "opportunity",
+                "hypothesis",
+                "veracity",
+                "report"
+              ],
+              "properties": {
+                "opportunity": {
+                  "type": "string",
+                  "pattern": "\\S"
+                },
+                "hypothesis": {
+                  "type": "string",
+                  "pattern": "\\S"
+                },
+                "veracity": {
+                  "type": "string",
+                  "pattern": "\\S"
+                },
+                "report": {
+                  "type": "string",
+                  "pattern": "\\S"
+                }
+              },
+              "additionalProperties": false
+            },
+            "provenance": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "minItems": 1
+            },
+            "settings": {
+              "type": "object",
+              "required": [],
+              "properties": {},
+              "additionalProperties": false
             }
           },
           "additionalProperties": false

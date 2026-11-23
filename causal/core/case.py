@@ -22,12 +22,14 @@ def validate_case(case: dict) -> set[str]:
     require(type(case["entries"]) is list, "entries debe ser una lista")
     entries = {}
     for entry in case["entries"]:
-        fields(entry, "id kind text", "state refs links")
+        fields(entry, "id kind text", "state refs links locator")
         require(all(label(entry[key]) for key in ("id", "kind", "text")), "Registro inválido")
         require(entry["kind"] in KINDS, "Tipo de registro desconocido")
         require(entry["id"] not in entries, "Registro duplicado")
         if "state" in entry:
             require(label(entry["state"]) and entry["state"] in STATES, "Estado documental inválido")
+        if "locator" in entry:
+            require(label(entry["locator"]), "Localizador documental inválido")
         labels(entry.get("refs", []))
         entries[entry["id"]] = entry
     event = entries.get(case["reference_event"])

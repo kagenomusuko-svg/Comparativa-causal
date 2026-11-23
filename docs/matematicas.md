@@ -85,7 +85,7 @@ certificados puede crecer exponencialmente. Se excluye la inferencia de
 leyes y de compatibilidad física, así como la composición en presencia
 de ciclos o efectos inhibidores sin condiciones de habilitación explícitas. Se coteja cada conjunto reducido con las vías alternativas activas. [Wright 1985, pp. 1788–1803](https://scholarship.kentlaw.iit.edu/fac_schol/697/).
 
-## Bayes · fnl-2013-exact
+## Bayes · bn-exact-fnl-2012-2013
 
 DAG categórico con tablas condicionales exhaustivas y normalizadas. La masa
 conjunta es el producto de las filas correspondientes a una asignación.
@@ -111,11 +111,7 @@ Los patrones nunca asignan cifras ni completan datos.
 | `testimony_components` | Objetivo, sensibilidad, objetividad y veracidad → informe | §3.4, fig. 9 |
 | `alibi` | Oportunidad → hipótesis e informe. Hipótesis → veracidad → informe. | §3.5, fig. 10 |
 
-Se consultó el texto completo de [Lagnado, Fenton y Neil 2012](https://doi.org/10.1080/19462166.2012.682656)
-en la [copia pública de autor](https://www.researchgate.net/publication/236944352_Legal_idioms_a_framework_for_evidential_reasoning).
-Las figuras 3–7 se contrastaron con cálculos exactos. De
-[Fenton, Neil y Lagnado 2013](https://doi.org/10.1111/cogs.12004) se
-consultó el resumen original. El texto completo de 2013 no estuvo
-accesible y la cobertura de los patrones se limita a los fragmentos
-verificados en 2012. Los identificadores, la expansión de arcos y los
-certificados JSON son decisiones de implementación de este proyecto.
+La correspondencia entre ambos artículos, los fragmentos nuevos, la
+calibración de exclusión y sus pruebas se documenta en
+[metodología bayesiana](fnl.md). El contrato histórico
+`fnl-2013-exact` conserva las operaciones y los cinco fragmentos de 2012.

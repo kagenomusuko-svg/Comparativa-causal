@@ -1,0 +1,164 @@
+{
+  "schema_version": "1",
+  "case": {
+    "schema_version": "1",
+    "id": "sintetico-v1",
+    "reference_event": "E",
+    "entries": [
+      {
+        "id": "E",
+        "kind": "event",
+        "text": "Se activa un indicador ficticio.",
+        "state": "disputed"
+      },
+      {
+        "id": "S",
+        "kind": "source",
+        "text": "Regla estipulada para el ejemplo sintético."
+      },
+      {
+        "id": "FNL",
+        "kind": "source",
+        "text": "Artículo de Fenton, Neil y Lagnado, DOI 10.1111/cogs.12004.",
+        "locator": "10.1111/cogs.12004, figura 1(b)"
+      }
+    ]
+  },
+  "engine": "bayesian",
+  "mathematical_version": "bn-exact-fnl-2012-2013",
+  "operation": "infer",
+  "model": {
+    "domains": {
+      "H": [
+        "0",
+        "1"
+      ],
+      "R": [
+        "0",
+        "1"
+      ]
+    },
+    "nodes": {
+      "H": {
+        "parents": [],
+        "rows": [
+          {
+            "when": {},
+            "then": {
+              "0": "99/100",
+              "1": "1/100"
+            }
+          }
+        ]
+      },
+      "R": {
+        "rows": [
+          {
+            "when": {
+              "H": "0"
+            },
+            "then": {
+              "0": "999999/1000000",
+              "1": "1/1000000"
+            }
+          },
+          {
+            "when": {
+              "H": "1"
+            },
+            "then": {
+              "0": "0",
+              "1": "1"
+            }
+          }
+        ]
+      }
+    },
+    "idioms": [
+      {
+        "id": "evidence",
+        "kind": "evidence",
+        "roles": {
+          "target": "H",
+          "report": "R"
+        },
+        "provenance": [
+          "S"
+        ]
+      }
+    ]
+  },
+  "parameters": {
+    "hypothesis": "H",
+    "evidence": {
+      "R": "1"
+    },
+    "alternatives": [
+      "1",
+      "0"
+    ]
+  },
+  "modeling_hypotheses": [
+    "E se representa mediante la consulta del motor."
+  ],
+  "assumptions": [
+    "Estructura, observaciones y parámetros del ejemplo estipulados como sintéticos."
+  ],
+  "provenance": {
+    "/model": [
+      "S"
+    ]
+  },
+  "lineage": {
+    "/model": {
+      "basis": [
+        {
+          "kind": "assumption",
+          "ref": "Estructura, observaciones y parámetros del ejemplo estipulados como sintéticos."
+        }
+      ]
+    },
+    "/model/nodes/H/rows/0/then/1": {
+      "basis": [
+        {
+          "kind": "document",
+          "ref": "FNL"
+        }
+      ]
+    }
+  },
+  "lineage_groups": [
+    {
+      "record": "/model",
+      "members": [
+        "/model/domains/H/0",
+        "/model/domains/H/1",
+        "/model/domains/R/0",
+        "/model/domains/R/1",
+        "/model/idioms/0/id",
+        "/model/idioms/0/kind",
+        "/model/idioms/0/provenance/0",
+        "/model/idioms/0/roles/report",
+        "/model/idioms/0/roles/target",
+        "/model/nodes/H/parents",
+        "/model/nodes/H/rows/0/then/0",
+        "/model/nodes/H/rows/0/then/1",
+        "/model/nodes/H/rows/0/when",
+        "/model/nodes/R/rows/0/then/0",
+        "/model/nodes/R/rows/0/then/1",
+        "/model/nodes/R/rows/0/when/H",
+        "/model/nodes/R/rows/1/then/0",
+        "/model/nodes/R/rows/1/then/1",
+        "/model/nodes/R/rows/1/when/H",
+        "/parameters/alternatives/0",
+        "/parameters/alternatives/1",
+        "/parameters/evidence/R",
+        "/parameters/hypothesis"
+      ]
+    }
+  ],
+  "options": {
+    "provenance_mode": "strict"
+  },
+  "reconstruction_id": "bayesian-strict"
+}

@@ -32,6 +32,7 @@ assert response["status"] == "success"
 assert response["result"]["responsibility"] == "1/2"
 ```
 
+- [Metodología bayesiana de 2012 y 2013](docs/fnl.md)
 - [Especificaciones y fuentes](docs/matematicas.md)
 - [Contrato JSON, adaptadores e integración externa](docs/contrato.md)
 - [Informe de cierre](docs/cierre.md)

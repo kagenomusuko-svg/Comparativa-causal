@@ -6,7 +6,7 @@ from ..core.lineage import lineage, resolve_pointer
 
 def adapt(request: dict) -> tuple[dict, dict, int, dict]:
     fields(request, "schema_version case engine mathematical_version operation model parameters",
-           "modeling_hypotheses assumptions provenance options lineage reconstruction_id")
+           "modeling_hypotheses assumptions provenance options lineage lineage_groups reconstruction_id")
     require(request["schema_version"] == "1", "Versión de solicitud incompatible")
     require(all(label(request[key]) for key in ("engine", "mathematical_version", "operation")),
             "Identificación de operación inválida")
@@ -31,10 +31,12 @@ def adapt(request: dict) -> tuple[dict, dict, int, dict]:
                         "Referencia de patrón inexistente")
     if "reconstruction_id" in request:
         require(label(request["reconstruction_id"]), "Identificación de reconstrucción inválida")
-    options = fields(request.get("options", {}), "", "max_steps")
+    options = fields(request.get("options", {}), "", "max_steps provenance_mode")
     limit = options.get("max_steps", 100_000)
     require(type(limit) is int and limit > 0, "max_steps debe ser entero positivo")
-    return model, params, limit, lineage(request)
+    mode = options.get("provenance_mode", "compatible")
+    require(mode in ("compatible", "strict"), "Modo de procedencia inválido")
+    return model, params, limit, lineage(request) | {"mode": mode}
 
 
 def validate_mechanism_sources(model, known):

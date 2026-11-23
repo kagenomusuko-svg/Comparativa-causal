@@ -135,13 +135,21 @@
                       "type": "object",
                       "required": [
                         "pointer",
-                        "basis",
-                        "depends_on"
+                        "depends_on",
+                        "basis"
                       ],
                       "properties": {
                         "pointer": {
                           "type": "string",
-                          "pattern": "\\S"
+                          "pattern": "^/"
+                        },
+                        "depends_on": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "pattern": "^/"
+                          },
+                          "minItems": 0
                         },
                         "basis": {
                           "type": "array",
@@ -157,30 +165,214 @@
                                   "document",
                                   "assertion",
                                   "hypothesis",
-                                  "assumption"
+                                  "assumption",
+                                  "derived"
                                 ]
                               },
                               "ref": {
                                 "type": "string",
-                                "pattern": "\\S"
+                                "minLength": 1
                               }
                             },
                             "additionalProperties": false
                           },
                           "minItems": 1
                         },
-                        "depends_on": {
-                          "type": "array",
-                          "items": {
-                            "type": "string",
-                            "pattern": "\\S"
-                          },
-                          "minItems": 0
+                        "derivation": {
+                          "type": "string",
+                          "minLength": 1
                         }
                       },
                       "additionalProperties": false
                     },
                     "minItems": 0
+                  },
+                  "mode": {
+                    "enum": [
+                      "strict",
+                      "compatible"
+                    ]
+                  },
+                  "coverage": {
+                    "type": "object",
+                    "required": [
+                      "complete",
+                      "elements"
+                    ],
+                    "properties": {
+                      "complete": {
+                        "type": "boolean"
+                      },
+                      "elements": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "required": [
+                            "pointer",
+                            "record",
+                            "coverage",
+                            "basis_kinds"
+                          ],
+                          "properties": {
+                            "pointer": {
+                              "type": "string",
+                              "pattern": "^/"
+                            },
+                            "record": {
+                              "anyOf": [
+                                {
+                                  "type": "string",
+                                  "pattern": "^/"
+                                },
+                                {
+                                  "type": "null"
+                                }
+                              ]
+                            },
+                            "coverage": {
+                              "enum": [
+                                "individual",
+                                "grouped",
+                                "missing"
+                              ]
+                            },
+                            "basis_kinds": {
+                              "type": "array",
+                              "items": {
+                                "enum": [
+                                  "document",
+                                  "assertion",
+                                  "hypothesis",
+                                  "assumption",
+                                  "derived"
+                                ]
+                              },
+                              "minItems": 0
+                            }
+                          },
+                          "additionalProperties": false
+                        },
+                        "minItems": 0
+                      }
+                    },
+                    "additionalProperties": false
+                  },
+                  "provenance_status": {
+                    "const": "declared_unverified"
+                  },
+                  "execution": {
+                    "type": "object",
+                    "required": [
+                      "status",
+                      "outputs"
+                    ],
+                    "properties": {
+                      "status": {
+                        "enum": [
+                          "exact",
+                          "conservative",
+                          "unknown"
+                        ]
+                      },
+                      "outputs": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "required": [
+                            "pointer",
+                            "dependency",
+                            "inputs",
+                            "operations",
+                            "intermediates"
+                          ],
+                          "properties": {
+                            "pointer": {
+                              "type": "string",
+                              "pattern": "^/"
+                            },
+                            "dependency": {
+                              "enum": [
+                                "exact",
+                                "conservative",
+                                "unknown"
+                              ]
+                            },
+                            "inputs": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "pattern": "^/"
+                              },
+                              "minItems": 0
+                            },
+                            "operations": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "minItems": 0
+                            },
+                            "intermediates": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "required": [
+                                  "pointer",
+                                  "dependency"
+                                ],
+                                "properties": {
+                                  "pointer": {
+                                    "type": "string",
+                                    "pattern": "^/"
+                                  },
+                                  "dependency": {
+                                    "enum": [
+                                      "exact",
+                                      "conservative",
+                                      "unknown"
+                                    ]
+                                  }
+                                },
+                                "additionalProperties": false
+                              },
+                              "minItems": 0
+                            },
+                            "input_scope": {
+                              "type": "string",
+                              "pattern": "^/"
+                            }
+                          },
+                          "additionalProperties": false
+                        },
+                        "minItems": 0
+                      },
+                      "observed_reads": {
+                        "type": "object",
+                        "required": [
+                          "dependency",
+                          "inputs",
+                          "scope"
+                        ],
+                        "additionalProperties": false,
+                        "properties": {
+                          "dependency": {
+                            "const": "exact"
+                          },
+                          "inputs": {
+                            "type": "array",
+                            "items": {
+                              "type": "string",
+                              "pattern": "^/"
+                            }
+                          },
+                          "scope": {
+                            "const": "instrumented_value_lookups"
+                          }
+                        }
+                      }
+                    },
+                    "additionalProperties": false
                   }
                 },
                 "additionalProperties": false

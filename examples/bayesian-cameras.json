@@ -1,0 +1,344 @@
+{
+  "schema_version": "1",
+  "case": {
+    "schema_version": "1",
+    "id": "sintetico-v1",
+    "reference_event": "E",
+    "entries": [
+      {
+        "id": "E",
+        "kind": "event",
+        "text": "Se activa un indicador ficticio.",
+        "state": "disputed"
+      },
+      {
+        "id": "S",
+        "kind": "source",
+        "text": "Regla estipulada para el ejemplo sintético."
+      },
+      {
+        "id": "FNL",
+        "kind": "source",
+        "text": "Artículo de Fenton, Neil y Lagnado, DOI 10.1111/cogs.12004.",
+        "locator": "10.1111/cogs.12004, figura 14(b) y 15"
+      }
+    ]
+  },
+  "engine": "bayesian",
+  "mathematical_version": "bn-exact-fnl-2012-2013",
+  "operation": "evidence_sequence",
+  "model": {
+    "domains": {
+      "H": [
+        "0",
+        "1"
+      ],
+      "D": [
+        "0",
+        "1"
+      ],
+      "E1": [
+        "0",
+        "1"
+      ],
+      "E2": [
+        "0",
+        "1"
+      ]
+    },
+    "nodes": {
+      "H": {
+        "parents": [],
+        "rows": [
+          {
+            "when": {},
+            "then": {
+              "0": "9/10",
+              "1": "1/10"
+            }
+          }
+        ]
+      },
+      "D": {
+        "parents": [],
+        "rows": [
+          {
+            "when": {},
+            "then": {
+              "0": "1/2",
+              "1": "1/2"
+            }
+          }
+        ]
+      },
+      "E1": {
+        "parents": [
+          "H"
+        ],
+        "rows": [
+          {
+            "when": {
+              "H": "0"
+            },
+            "then": {
+              "0": "9/10",
+              "1": "1/10"
+            }
+          },
+          {
+            "when": {
+              "H": "1"
+            },
+            "then": {
+              "0": "1/5",
+              "1": "4/5"
+            }
+          }
+        ]
+      },
+      "E2": {
+        "parents": [
+          "D",
+          "E1",
+          "H"
+        ],
+        "rows": [
+          {
+            "when": {
+              "D": "0",
+              "E1": "0",
+              "H": "0"
+            },
+            "then": {
+              "0": "9/10",
+              "1": "1/10"
+            }
+          },
+          {
+            "when": {
+              "D": "0",
+              "E1": "0",
+              "H": "1"
+            },
+            "then": {
+              "0": "1/5",
+              "1": "4/5"
+            }
+          },
+          {
+            "when": {
+              "D": "0",
+              "E1": "1",
+              "H": "0"
+            },
+            "then": {
+              "0": "9/10",
+              "1": "1/10"
+            }
+          },
+          {
+            "when": {
+              "D": "0",
+              "E1": "1",
+              "H": "1"
+            },
+            "then": {
+              "0": "1/5",
+              "1": "4/5"
+            }
+          },
+          {
+            "when": {
+              "D": "1",
+              "E1": "0",
+              "H": "0"
+            },
+            "then": {
+              "0": "1",
+              "1": "0"
+            }
+          },
+          {
+            "when": {
+              "D": "1",
+              "E1": "0",
+              "H": "1"
+            },
+            "then": {
+              "0": "1",
+              "1": "0"
+            }
+          },
+          {
+            "when": {
+              "D": "1",
+              "E1": "1",
+              "H": "0"
+            },
+            "then": {
+              "0": "0",
+              "1": "1"
+            }
+          },
+          {
+            "when": {
+              "D": "1",
+              "E1": "1",
+              "H": "1"
+            },
+            "then": {
+              "0": "0",
+              "1": "1"
+            }
+          }
+        ]
+      }
+    },
+    "idioms": [
+      {
+        "id": "dependent_evidence",
+        "kind": "dependent_evidence",
+        "roles": {
+          "target": "H",
+          "first_report": "E1",
+          "second_report": "E2",
+          "dependency": "D"
+        },
+        "provenance": [
+          "S"
+        ]
+      }
+    ]
+  },
+  "parameters": {
+    "hypothesis": "H",
+    "evidence": {
+      "D": "1"
+    },
+    "sequence": [
+      {
+        "E1": "1"
+      },
+      {
+        "E2": "1"
+      }
+    ]
+  },
+  "modeling_hypotheses": [
+    "E se representa mediante la consulta del motor."
+  ],
+  "assumptions": [
+    "Estructura, observaciones y parámetros del ejemplo estipulados como sintéticos."
+  ],
+  "provenance": {
+    "/model": [
+      "S"
+    ]
+  },
+  "lineage": {
+    "/model": {
+      "basis": [
+        {
+          "kind": "assumption",
+          "ref": "Estructura, observaciones y parámetros del ejemplo estipulados como sintéticos."
+        }
+      ]
+    },
+    "/model/nodes/H/rows/0/then/1": {
+      "basis": [
+        {
+          "kind": "document",
+          "ref": "FNL"
+        }
+      ]
+    }
+  },
+  "lineage_groups": [
+    {
+      "record": "/model",
+      "members": [
+        "/model/domains/D/0",
+        "/model/domains/D/1",
+        "/model/domains/E1/0",
+        "/model/domains/E1/1",
+        "/model/domains/E2/0",
+        "/model/domains/E2/1",
+        "/model/domains/H/0",
+        "/model/domains/H/1",
+        "/model/idioms/0/id",
+        "/model/idioms/0/kind",
+        "/model/idioms/0/provenance/0",
+        "/model/idioms/0/roles/dependency",
+        "/model/idioms/0/roles/first_report",
+        "/model/idioms/0/roles/second_report",
+        "/model/idioms/0/roles/target",
+        "/model/nodes/D/parents",
+        "/model/nodes/D/rows/0/then/0",
+        "/model/nodes/D/rows/0/then/1",
+        "/model/nodes/D/rows/0/when",
+        "/model/nodes/E1/parents/0",
+        "/model/nodes/E1/rows/0/then/0",
+        "/model/nodes/E1/rows/0/then/1",
+        "/model/nodes/E1/rows/0/when/H",
+        "/model/nodes/E1/rows/1/then/0",
+        "/model/nodes/E1/rows/1/then/1",
+        "/model/nodes/E1/rows/1/when/H",
+        "/model/nodes/E2/parents/0",
+        "/model/nodes/E2/parents/1",
+        "/model/nodes/E2/parents/2",
+        "/model/nodes/E2/rows/0/then/0",
+        "/model/nodes/E2/rows/0/then/1",
+        "/model/nodes/E2/rows/0/when/D",
+        "/model/nodes/E2/rows/0/when/E1",
+        "/model/nodes/E2/rows/0/when/H",
+        "/model/nodes/E2/rows/1/then/0",
+        "/model/nodes/E2/rows/1/then/1",
+        "/model/nodes/E2/rows/1/when/D",
+        "/model/nodes/E2/rows/1/when/E1",
+        "/model/nodes/E2/rows/1/when/H",
+        "/model/nodes/E2/rows/2/then/0",
+        "/model/nodes/E2/rows/2/then/1",
+        "/model/nodes/E2/rows/2/when/D",
+        "/model/nodes/E2/rows/2/when/E1",
+        "/model/nodes/E2/rows/2/when/H",
+        "/model/nodes/E2/rows/3/then/0",
+        "/model/nodes/E2/rows/3/then/1",
+        "/model/nodes/E2/rows/3/when/D",
+        "/model/nodes/E2/rows/3/when/E1",
+        "/model/nodes/E2/rows/3/when/H",
+        "/model/nodes/E2/rows/4/then/0",
+        "/model/nodes/E2/rows/4/then/1",
+        "/model/nodes/E2/rows/4/when/D",
+        "/model/nodes/E2/rows/4/when/E1",
+        "/model/nodes/E2/rows/4/when/H",
+        "/model/nodes/E2/rows/5/then/0",
+        "/model/nodes/E2/rows/5/then/1",
+        "/model/nodes/E2/rows/5/when/D",
+        "/model/nodes/E2/rows/5/when/E1",
+        "/model/nodes/E2/rows/5/when/H",
+        "/model/nodes/E2/rows/6/then/0",
+        "/model/nodes/E2/rows/6/then/1",
+        "/model/nodes/E2/rows/6/when/D",
+        "/model/nodes/E2/rows/6/when/E1",
+        "/model/nodes/E2/rows/6/when/H",
+        "/model/nodes/E2/rows/7/then/0",
+        "/model/nodes/E2/rows/7/then/1",
+        "/model/nodes/E2/rows/7/when/D",
+        "/model/nodes/E2/rows/7/when/E1",
+        "/model/nodes/E2/rows/7/when/H",
+        "/model/nodes/H/parents",
+        "/model/nodes/H/rows/0/then/0",
+        "/model/nodes/H/rows/0/then/1",
+        "/model/nodes/H/rows/0/when",
+        "/parameters/evidence/D",
+        "/parameters/hypothesis",
+        "/parameters/sequence/0/E1",
+        "/parameters/sequence/1/E2"
+      ]
+    }
+  ],
+  "options": {
+    "provenance_mode": "strict"
+  },
+  "reconstruction_id": "bayesian-cameras"
+}

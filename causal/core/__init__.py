@@ -1,5 +1,5 @@
 """Validación y primitivas de cálculo finito."""
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from fractions import Fraction
 from itertools import product
 from graphlib import CycleError, TopologicalSorter
@@ -97,6 +97,7 @@ def matches(world: dict, condition: dict) -> bool:
 class Budget:
     limit: int
     used: int = 0
+    reads: set[str] = field(default_factory=set)
 
     def tick(self) -> None:
         if self.used >= self.limit:

@@ -3,6 +3,7 @@ from copy import deepcopy
 import re
 
 from . import dag, fields, label, labels, require
+from .audit import coverage
 
 
 def resolve_pointer(document, pointer):
@@ -32,8 +33,10 @@ def lineage(request):
         require(type(pointer) is str and pointer.startswith(("/model", "/parameters")) and
                 pointer.split("/")[1] in {"model", "parameters"}, "Puntero fuera del modelo o parámetros")
         resolve_pointer(request, pointer)
-        fields(record, "basis", "depends_on")
-        graph[pointer] = labels(record.get("depends_on", []))
+        fields(record, "basis", "depends_on derivation")
+        if "derivation" in record:
+            require(label(record["derivation"]), "Operación de derivación inválida")
+        graph[pointer] = list(labels(record.get("depends_on", [])))
         bases = record["basis"]
         require(type(bases) is list and bool(bases), "El elemento debe tener una base declarada")
         seen = set()
@@ -46,14 +49,22 @@ def lineage(request):
                 "assertion": {"proposition", "evidence", "contradiction", "support", "absence"},
                 "hypothesis": {"hypothesis"},
                 "assumption": {"assumption"},
+                "derived": set(),
             }
             require(kind in expected, "Tipo de base desconocido")
             declared_field = {"assumption": "assumptions", "hypothesis": "modeling_hypotheses"}.get(kind)
             valid_entry = ref in entries and entries[ref]["kind"] in expected[kind]
             valid_declaration = declared_field is not None and ref in request.get(declared_field, [])
-            require(valid_entry or valid_declaration, f"Base incompatible o inexistente: {ref}")
+            if kind == "derived":
+                require(ref in raw and label(record.get("derivation")), "Derivación sin operación o antecedente")
+                if ref not in graph[pointer]:
+                    graph[pointer].append(ref)
+            else:
+                require(valid_entry or valid_declaration, f"Base incompatible o inexistente: {ref}")
             require((kind, ref) not in seen, "Base duplicada")
             seen.add((kind, ref))
-        records.append({"pointer": pointer, "basis": deepcopy(bases), "depends_on": graph[pointer]})
+        records.append({"pointer": pointer, "basis": deepcopy(bases), "depends_on": graph[pointer]} |
+                       ({"derivation": record["derivation"]} if "derivation" in record else {}))
     order = dag(graph, raw)
-    return {"scope": "declared_inputs", "elements": records, "dependency_order": list(order)}
+    return {"scope": "declared_inputs", "elements": records, "dependency_order": list(order),
+            "provenance_status": "declared_unverified", "coverage": coverage(request, records, order)}
